@@ -40,4 +40,50 @@
             cursor: pointer;
         }
         button:hover {
-            background
+            background-color: #0047b3;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            background-color: #e9f5ff;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wishlist-container">
+        <h1>Anonymous Wishlist</h1>
+        <input type="text" id="wishlistInput" placeholder="Enter wishlist item..." />
+        <button onclick="addItem()">Add Item</button>
+        <ul id="wishlistList"></ul>
+    </div>
+
+    <script>
+        // Function to add items to the wishlist
+        function addItem() {
+            // Get the input value
+            var item = document.getElementById("wishlistInput").value;
+
+            // If input is not empty, add it to the list
+            if (item.trim() !== "") {
+                var li = document.createElement("li");
+                li.textContent = item;
+
+                // Append the item to the list
+                document.getElementById("wishlistList").appendChild(li);
+
+                // Clear the input field after adding the item
+                document.getElementById("wishlistInput").value = "";
+            } else {
+                alert("Please enter a wishlist item.");
+            }
+        }
+    </script>
+
+</body>
+</html>
