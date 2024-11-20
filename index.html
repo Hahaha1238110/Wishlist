@@ -7,25 +7,31 @@
   
   <!-- Include Firebase SDK via CDN -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-    
-    // Your Firebase configuration object
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";  // Import Realtime Database methods
+
+    // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAHZbilFupWzHDpovfLwS_UkeozIqrGaUs",
       authDomain: "wishlist-a9da8.firebaseapp.com",
+      databaseURL: "https://wishlist-a9da8-default-rtdb.firebaseio.com", // Make sure the databaseURL is set correctly
       projectId: "wishlist-a9da8",
       storageBucket: "wishlist-a9da8.firebasestorage.app",
       messagingSenderId: "410486011886",
-      appId: "1:410486011886:web:5a08da491e9d01557940ff",
-      measurementId: "G-YZSYKQC9M5"
+      appId: "1:410486011886:web:8469d1e14e3ba9887940ff",
+      measurementId: "G-KMX8JXKBB0"
     };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    // Get a reference to the Realtime Database
     const db = getDatabase(app);
 
-    // Function to save data to Firebase Realtime Database
+    // Function to save the wishlist to Firebase Realtime Database
     function saveWishlist() {
       const name = document.getElementById("name").value;
       const wish1 = document.getElementById("wish1").value;
@@ -33,7 +39,8 @@
       const wish3 = document.getElementById("wish3").value;
 
       if (name && wish1 && wish2 && wish3) {
-        const newWishlistRef = ref(db, 'wishlists/' + name);  // Storing under 'wishlists' node
+        // Create a reference to a specific path in the database
+        const newWishlistRef = ref(db, 'wishlists/' + name); // Save to "wishlists" under the user's name
         set(newWishlistRef, {
           name: name,
           wish1: wish1,
@@ -41,7 +48,7 @@
           wish3: wish3
         }).then(() => {
           alert("Wishlist added successfully!");
-          document.getElementById("wishlistForm").reset();  // Reset form after submission
+          document.getElementById("wishlistForm").reset(); // Reset the form after submission
         }).catch((error) => {
           console.error("Error writing to Firebase: ", error);
         });
