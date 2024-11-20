@@ -15,7 +15,7 @@
             text-align: center;
         }
         .wishlist-container {
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
@@ -42,15 +42,22 @@
         button:hover {
             background-color: #0047b3;
         }
-        ul {
-            list-style-type: none;
-            padding-left: 0;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-        li {
-            background-color: #e9f5ff;
+        th, td {
             padding: 10px;
-            margin: 5px 0;
-            border-radius: 4px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #1a73e8;
+            color: white;
+        }
+        td {
+            background-color: #f9f9f9;
         }
     </style>
 </head>
@@ -60,22 +67,47 @@
         <h1>Anonymous Wishlist</h1>
         <input type="text" id="wishlistInput" placeholder="Enter wishlist item..." />
         <button onclick="addItem()">Add Item</button>
-        <ul id="wishlistList"></ul>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Wishlist</th>
+                </tr>
+            </thead>
+            <tbody id="wishlistTableBody">
+                <!-- Wishlist items will be added here -->
+            </tbody>
+        </table>
     </div>
 
     <script>
-        // Function to add items to the wishlist
+        let count = 0;
+
+        // Function to add items to the wishlist table
         function addItem() {
-            // Get the input value
-            var item = document.getElementById("wishlistInput").value;
+            const item = document.getElementById("wishlistInput").value;
 
-            // If input is not empty, add it to the list
             if (item.trim() !== "") {
-                var li = document.createElement("li");
-                li.textContent = item;
+                // Increment the number for each new item
+                count++;
 
-                // Append the item to the list
-                document.getElementById("wishlistList").appendChild(li);
+                // Create a new row in the table
+                const row = document.createElement("tr");
+
+                // Create the cells for the row
+                const numberCell = document.createElement("td");
+                numberCell.textContent = count;  // Set the number
+
+                const itemCell = document.createElement("td");
+                itemCell.textContent = item;  // Set the wishlist item
+
+                // Append the cells to the row
+                row.appendChild(numberCell);
+                row.appendChild(itemCell);
+
+                // Add the row to the table body
+                document.getElementById("wishlistTableBody").appendChild(row);
 
                 // Clear the input field after adding the item
                 document.getElementById("wishlistInput").value = "";
