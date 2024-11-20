@@ -3,31 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wishlist</title>
+  <title>Wishlist App</title>
+  
+  <!-- Include Firebase SDK via CDN -->
   <script type="module">
-    // Firebase imports for app and database functionality
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
-    // Your Firebase project configuration
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    
+    // Your Firebase configuration object
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      databaseURL: "YOUR_DATABASE_URL",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID",
-      measurementId: "YOUR_MEASUREMENT_ID"
+      apiKey: "AIzaSyAHZbilFupWzHDpovfLwS_UkeozIqrGaUs",
+      authDomain: "wishlist-a9da8.firebaseapp.com",
+      projectId: "wishlist-a9da8",
+      storageBucket: "wishlist-a9da8.firebasestorage.app",
+      messagingSenderId: "410486011886",
+      appId: "1:410486011886:web:5a08da491e9d01557940ff",
+      measurementId: "G-YZSYKQC9M5"
     };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const db = getDatabase(app);
 
-    // Save Wishlist to Firebase
+    // Function to save data to Firebase Realtime Database
     function saveWishlist() {
       const name = document.getElementById("name").value;
       const wish1 = document.getElementById("wish1").value;
@@ -35,71 +33,49 @@
       const wish3 = document.getElementById("wish3").value;
 
       if (name && wish1 && wish2 && wish3) {
-        const newWishlistRef = ref(db, 'wishlists/' + name); // Use name as a key
+        const newWishlistRef = ref(db, 'wishlists/' + name);  // Storing under 'wishlists' node
         set(newWishlistRef, {
           name: name,
           wish1: wish1,
           wish2: wish2,
           wish3: wish3
         }).then(() => {
-          alert("Wishlist added!");
-          document.getElementById("wishlistForm").reset(); // Reset the form after submission
-          getWishlists(); // Refresh wishlists displayed
+          alert("Wishlist added successfully!");
+          document.getElementById("wishlistForm").reset();  // Reset form after submission
         }).catch((error) => {
-          console.error("Error writing data: ", error);
+          console.error("Error writing to Firebase: ", error);
         });
       } else {
-        alert("Please fill all fields.");
+        alert("Please fill in all the fields!");
       }
     }
-
-    // Fetch all wishlists from Firebase
-    function getWishlists() {
-      const dbRef = ref(db, 'wishlists/');
-      get(dbRef).then((snapshot) => {
-        let output = '';
-        if (snapshot.exists()) {
-          snapshot.forEach((childSnapshot) => {
-            const data = childSnapshot.val();
-            output += `
-              <p>
-                <strong>${data.name}</strong><br>
-                Wish 1: ${data.wish1}<br>
-                Wish 2: ${data.wish2}<br>
-                Wish 3: ${data.wish3}
-              </p>
-            `;
-          });
-        } else {
-          output = "<p>No wishlists available.</p>";
-        }
-        document.getElementById("wishlists").innerHTML = output;
-      }).catch((error) => {
-        console.error("Error reading data: ", error);
-      });
-    }
-
-    // Load wishlists when the page loads
-    window.onload = getWishlists;
   </script>
+
 </head>
 <body>
-  <h1>Wishlist</h1>
 
-  <!-- Wishlist Form -->
-  <form id="wishlistForm">
-    <label for="name">Name:</label>
-    <input type="text" id="name" required><br><br>
-    <label for="wish1">Wish 1:</label>
-    <input type="text" id="wish1" required><br><br>
-    <label for="wish2">Wish 2:</label>
-    <input type="text" id="wish2" required><br><br>
-    <label for="wish3">Wish 3:</label>
-    <input type="text" id="wish3" required><br><br>
-    <button type="button" onclick="saveWishlist()">Add Wishlist</button>
+  <h1>Submit Your Wishlist</h1>
+
+  <!-- Form to collect the wishlist data -->
+  <form id="wishlistForm" onsubmit="event.preventDefault(); saveWishlist();">
+    <label for="name">Name: </label>
+    <input type="text" id="name" placeholder="Enter your name" required>
+    <br><br>
+
+    <label for="wish1">Wish 1: </label>
+    <input type="text" id="wish1" placeholder="Enter wish 1" required>
+    <br><br>
+
+    <label for="wish2">Wish 2: </label>
+    <input type="text" id="wish2" placeholder="Enter wish 2" required>
+    <br><br>
+
+    <label for="wish3">Wish 3: </label>
+    <input type="text" id="wish3" placeholder="Enter wish 3" required>
+    <br><br>
+
+    <button type="submit">Add Wishlist</button>
   </form>
 
-  <h2>Other Wishlists</h2>
-  <div id="wishlists"></div>
 </body>
 </html>
