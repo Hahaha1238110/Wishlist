@@ -30,7 +30,6 @@
             border-radius: 4px;
         }
         button {
-            width: 100%;
             padding: 10px;
             background-color: #1a73e8;
             color: white;
@@ -59,20 +58,53 @@
         td {
             background-color: #f9f9f9;
         }
+        .input-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .input-group label {
+            width: 20%;
+        }
+        .input-group input {
+            width: 70%;
+        }
     </style>
 </head>
 <body>
 
     <div class="wishlist-container">
         <h1>Anonymous Wishlist</h1>
-        <input type="text" id="wishlistInput" placeholder="Enter wishlist item..." />
+
+        <!-- Input fields for Name and Wishlist -->
+        <div class="input-group">
+            <label for="nameInput">Name:</label>
+            <input type="text" id="nameInput" placeholder="Enter your name..." />
+        </div>
+        <div class="input-group">
+            <label for="wish1Input">Wish 1:</label>
+            <input type="text" id="wish1Input" placeholder="Enter wish 1..." />
+        </div>
+        <div class="input-group">
+            <label for="wish2Input">Wish 2:</label>
+            <input type="text" id="wish2Input" placeholder="Enter wish 2..." />
+        </div>
+        <div class="input-group">
+            <label for="wish3Input">Wish 3:</label>
+            <input type="text" id="wish3Input" placeholder="Enter wish 3..." />
+        </div>
+
         <button onclick="addItem()">Add Item</button>
 
+        <!-- Wishlist Table -->
         <table>
             <thead>
                 <tr>
                     <th>Number</th>
-                    <th>Wishlist</th>
+                    <th>Name</th>
+                    <th>Wish 1</th>
+                    <th>Wish 2</th>
+                    <th>Wish 3</th>
                 </tr>
             </thead>
             <tbody id="wishlistTableBody">
@@ -84,37 +116,72 @@
     <script>
         let count = 0;
 
-        // Function to add items to the wishlist table
+        // Load existing wishlist items from localStorage
+        function loadWishlist() {
+            const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+            wishlist.forEach((item, index) => {
+                count = index + 1;  // Update count to continue numbering correctly
+                addRow(item);
+            });
+        }
+
+        // Function to add an item to the table
         function addItem() {
-            const item = document.getElementById("wishlistInput").value;
+            const name = document.getElementById("nameInput").value;
+            const wish1 = document.getElementById("wish1Input").value;
+            const wish2 = document.getElementById("wish2Input").value;
+            const wish3 = document.getElementById("wish3Input").value;
 
-            if (item.trim() !== "") {
-                // Increment the number for each new item
+            if (name.trim() !== "" && (wish1.trim() !== "" || wish2.trim() !== "" || wish3.trim() !== "")) {
+                // Add item to localStorage
+                const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+                wishlist.push({ name, wish1, wish2, wish3 });
+                localStorage.setItem("wishlist", JSON.stringify(wishlist));
+
+                // Add row to table
                 count++;
+                addRow({ name, wish1, wish2, wish3 });
 
-                // Create a new row in the table
-                const row = document.createElement("tr");
-
-                // Create the cells for the row
-                const numberCell = document.createElement("td");
-                numberCell.textContent = count;  // Set the number
-
-                const itemCell = document.createElement("td");
-                itemCell.textContent = item;  // Set the wishlist item
-
-                // Append the cells to the row
-                row.appendChild(numberCell);
-                row.appendChild(itemCell);
-
-                // Add the row to the table body
-                document.getElementById("wishlistTableBody").appendChild(row);
-
-                // Clear the input field after adding the item
-                document.getElementById("wishlistInput").value = "";
+                // Clear the input fields after adding the item
+                document.getElementById("nameInput").value = "";
+                document.getElementById("wish1Input").value = "";
+                document.getElementById("wish2Input").value = "";
+                document.getElementById("wish3Input").value = "";
             } else {
-                alert("Please enter a wishlist item.");
+                alert("Please fill in the Name and at least one Wish.");
             }
         }
+
+        // Function to add a new row in the table
+        function addRow(item) {
+            const row = document.createElement("tr");
+
+            const numberCell = document.createElement("td");
+            numberCell.textContent = count;
+
+            const nameCell = document.createElement("td");
+            nameCell.textContent = item.name;
+
+            const wish1Cell = document.createElement("td");
+            wish1Cell.textContent = item.wish1;
+
+            const wish2Cell = document.createElement("td");
+            wish2Cell.textContent = item.wish2;
+
+            const wish3Cell = document.createElement("td");
+            wish3Cell.textContent = item.wish3;
+
+            row.appendChild(numberCell);
+            row.appendChild(nameCell);
+            row.appendChild(wish1Cell);
+            row.appendChild(wish2Cell);
+            row.appendChild(wish3Cell);
+
+            document.getElementById("wishlistTableBody").appendChild(row);
+        }
+
+        // Initialize the page with saved items
+        window.onload = loadWishlist;
     </script>
 
 </body>
