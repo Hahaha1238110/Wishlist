@@ -1,188 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anonymous Wishlist</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
-            color: #333;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist</title>
+  <script type="module">
+    // Import the necessary Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAHZbilFupWzHDpovfLwS_UkeozIqrGaUs",
+      authDomain: "wishlist-a9da8.firebaseapp.com",
+      projectId: "wishlist-a9da8",
+      storageBucket: "wishlist-a9da8.firebasestorage.app",
+      messagingSenderId: "410486011886",
+      appId: "1:410486011886:web:5a08da491e9d01557940ff",
+      measurementId: "G-YZSYKQC9M5"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Function to save wishlist to Firebase
+    function saveWishlist() {
+      const name = document.getElementById("name").value;
+      const wish1 = document.getElementById("wish1").value;
+      const wish2 = document.getElementById("wish2").value;
+      const wish3 = document.getElementById("wish3").value;
+
+      if (name && wish1 && wish2 && wish3) {
+        // Save data to Realtime Database
+        const newWishlistRef = ref(db, 'wishlists/' + name);
+        set(newWishlistRef, {
+          name: name,
+          wish1: wish1,
+          wish2: wish2,
+          wish3: wish3
+        }).then(() => {
+          alert("Wishlist added!");
+          // Clear form after submission
+          document.getElementById("wishlistForm").reset();
+        }).catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+      } else {
+        alert("Please fill all fields.");
+      }
+    }
+
+    // Function to get all wishlists
+    function getWishlists() {
+      const dbRef = ref(db, 'wishlists/');
+      get(dbRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          let output = "";
+          snapshot.forEach((childSnapshot) => {
+            const data = childSnapshot.val();
+            output += `<p><strong>${data.name}</strong><br>Wish 1: ${data.wish1}<br>Wish 2: ${data.wish2}<br>Wish 3: ${data.wish3}</p>`;
+          });
+          document.getElementById("wishlists").innerHTML = output;
+        } else {
+          document.getElementById("wishlists").innerHTML = "<p>No wishlists available.</p>";
         }
-        h1 {
-            text-align: center;
-        }
-        .wishlist-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        input[type="text"] {
-            width: 80%;
-            padding: 8px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px;
-            background-color: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0047b3;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #1a73e8;
-            color: white;
-        }
-        td {
-            background-color: #f9f9f9;
-        }
-        .input-group {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .input-group label {
-            width: 20%;
-        }
-        .input-group input {
-            width: 70%;
-        }
-    </style>
+      }).catch((error) => {
+        console.error("Error reading data: ", error);
+      });
+    }
+
+    // Load existing wishlists on page load
+    window.onload = getWishlists;
+  </script>
 </head>
 <body>
+  <h1>Wishlist</h1>
 
-    <div class="wishlist-container">
-        <h1>Anonymous Wishlist</h1>
+  <form id="wishlistForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter your name" required><br><br>
+    <label for="wish1">Wish 1:</label>
+    <input type="text" id="wish1" placeholder="Enter your first wish" required><br><br>
+    <label for="wish2">Wish 2:</label>
+    <input type="text" id="wish2" placeholder="Enter your second wish" required><br><br>
+    <label for="wish3">Wish 3:</label>
+    <input type="text" id="wish3" placeholder="Enter your third wish" required><br><br>
+    <button type="button" onclick="saveWishlist()">Add Wishlist</button>
+  </form>
 
-        <!-- Input fields for Name and Wishlist -->
-        <div class="input-group">
-            <label for="nameInput">Name:</label>
-            <input type="text" id="nameInput" placeholder="Enter your name..." />
-        </div>
-        <div class="input-group">
-            <label for="wish1Input">Wish 1:</label>
-            <input type="text" id="wish1Input" placeholder="Enter wish 1..." />
-        </div>
-        <div class="input-group">
-            <label for="wish2Input">Wish 2:</label>
-            <input type="text" id="wish2Input" placeholder="Enter wish 2..." />
-        </div>
-        <div class="input-group">
-            <label for="wish3Input">Wish 3:</label>
-            <input type="text" id="wish3Input" placeholder="Enter wish 3..." />
-        </div>
-
-        <button onclick="addItem()">Add Item</button>
-
-        <!-- Wishlist Table -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Number</th>
-                    <th>Name</th>
-                    <th>Wish 1</th>
-                    <th>Wish 2</th>
-                    <th>Wish 3</th>
-                </tr>
-            </thead>
-            <tbody id="wishlistTableBody">
-                <!-- Wishlist items will be added here -->
-            </tbody>
-        </table>
-    </div>
-
-    <script>
-        let count = 0;
-
-        // Load existing wishlist items from localStorage
-        function loadWishlist() {
-            const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-            wishlist.forEach((item, index) => {
-                count = index + 1;  // Update count to continue numbering correctly
-                addRow(item);
-            });
-        }
-
-        // Function to add an item to the table
-        function addItem() {
-            const name = document.getElementById("nameInput").value;
-            const wish1 = document.getElementById("wish1Input").value;
-            const wish2 = document.getElementById("wish2Input").value;
-            const wish3 = document.getElementById("wish3Input").value;
-
-            if (name.trim() !== "" && (wish1.trim() !== "" || wish2.trim() !== "" || wish3.trim() !== "")) {
-                // Add item to localStorage
-                const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
-                wishlist.push({ name, wish1, wish2, wish3 });
-                localStorage.setItem("wishlist", JSON.stringify(wishlist));
-
-                // Add row to table
-                count++;
-                addRow({ name, wish1, wish2, wish3 });
-
-                // Clear the input fields after adding the item
-                document.getElementById("nameInput").value = "";
-                document.getElementById("wish1Input").value = "";
-                document.getElementById("wish2Input").value = "";
-                document.getElementById("wish3Input").value = "";
-            } else {
-                alert("Please fill in the Name and at least one Wish.");
-            }
-        }
-
-        // Function to add a new row in the table
-        function addRow(item) {
-            const row = document.createElement("tr");
-
-            const numberCell = document.createElement("td");
-            numberCell.textContent = count;
-
-            const nameCell = document.createElement("td");
-            nameCell.textContent = item.name;
-
-            const wish1Cell = document.createElement("td");
-            wish1Cell.textContent = item.wish1;
-
-            const wish2Cell = document.createElement("td");
-            wish2Cell.textContent = item.wish2;
-
-            const wish3Cell = document.createElement("td");
-            wish3Cell.textContent = item.wish3;
-
-            row.appendChild(numberCell);
-            row.appendChild(nameCell);
-            row.appendChild(wish1Cell);
-            row.appendChild(wish2Cell);
-            row.appendChild(wish3Cell);
-
-            document.getElementById("wishlistTableBody").appendChild(row);
-        }
-
-        // Initialize the page with saved items
-        window.onload = loadWishlist;
-    </script>
-
+  <h2>All Wishlists:</h2>
+  <div id="wishlists"></div>
 </body>
 </html>
