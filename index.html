@@ -26,7 +26,7 @@
       background-color: #fff;
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
+      max-width: 400px;
     }
 
     label {
@@ -36,15 +36,19 @@
       text-align: left;
     }
 
-    input[type="text"] {
-       width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  font-size: 16px;
-  height: 60px; /* Adjust height here */
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      height: 100px; /* Adjust height for multi-line */
+      resize: vertical; /* Allows resizing vertically */
     }
 
     button {
@@ -94,11 +98,11 @@
     <label for="name">Name:</label>
     <input type="text" id="name" placeholder="Enter your name" required>
     <label for="wish1">Wish 1:</label>
-    <input type="text" id="wish1" placeholder="Enter your first wish" required>
+    <textarea id="wish1" placeholder="Enter your first wish" required></textarea>
     <label for="wish2">Wish 2:</label>
-    <input type="text" id="wish2" placeholder="Enter your second wish" required>
+    <textarea id="wish2" placeholder="Enter your second wish" required></textarea>
     <label for="wish3">Wish 3:</label>
-    <input type="text" id="wish3" placeholder="Enter your third wish" required>
+    <textarea id="wish3" placeholder="Enter your third wish" required></textarea>
     <button type="submit">Add Wishlist</button>
   </form>
 
