@@ -44,6 +44,10 @@
       box-sizing: border-box;
     }
 
+    input[type="text"] {
+      text-align: center;
+    }
+
     textarea {
       height: 100px;
       resize: vertical;
@@ -92,9 +96,9 @@
 
     /* Number column styling */
     th.Number, td.Number {
-      width: 60px;            /* fits ~4 digits */
-      text-align: center;      /* horizontal center */
-      vertical-align: middle;  /* vertical center */
+      width: 60px;
+      text-align: center;
+      vertical-align: middle;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -102,19 +106,20 @@
 
     /* Date/Time column styling */
     th.date-time, td.date-time {
-      width: 120px;
-      font-size: 10px;
+      width: 140px;
+      font-size: 12px;
       color: #555;
       white-space: normal;
     }
+
   </style>
 </head>
 <body>
 
   <h1>Submit Your Wishlist</h1>
   <form id="wishlistForm" onsubmit="event.preventDefault(); saveWishlist();">
-    <label for="Number">Number:</label>
-    <input type="text" id="Number" placeholder="Enter 1-9" required>
+    <label for="Number">Number (1-9):</label>
+    <input type="text" id="Number" placeholder="Enter 1-9" maxlength="1" pattern="[1-9]" title="Enter a number from 1 to 9" required>
 
     <label for="wish1">Wish 1:</label>
     <textarea id="wish1" placeholder="Enter your first wish" required></textarea>
@@ -144,7 +149,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+    import { getDatabase, ref, set, get, push } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAHZbilFupWzHDpovfLwS_UkeozIqrGaUs",
@@ -156,8 +161,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // Save wishlist to Firebase
     window.saveWishlist = function saveWishlist() {
-      const name = document.getElementById("name").value.trim();
+      const name = document.getElementById("Number").value.trim();
       const wish1 = document.getElementById("wish1").value.trim();
       const wish2 = document.getElementById("wish2").value.trim();
       const wish3 = document.getElementById("wish3").value.trim();
@@ -171,8 +177,8 @@
         };
         const formattedDate = now.toLocaleString('en-PH', options).replace(',', '');
 
-        const wishlistRef = ref(db, 'wishlists/' + name);
-        set(wishlistRef, { name, wish1, wish2, wish3, timestamp: formattedDate })
+        const wishlistRef = ref(db, 'wishlists');
+        push(wishlistRef, { name, wish1, wish2, wish3, timestamp: formattedDate })
           .then(() => {
             alert("Wishlist saved!");
             document.getElementById("wishlistForm").reset();
@@ -184,6 +190,7 @@
       }
     };
 
+    // Load wishlists from Firebase
     function loadWishlists() {
       const wishlistsRef = ref(db, 'wishlists');
       get(wishlistsRef)
@@ -196,7 +203,7 @@
               const item = data[key];
               container.innerHTML += `
                 <tr>
-                  <td class="name">${item.name}</td>
+                  <td class="Number">${item.name}</td>
                   <td>${item.wish1.replace(/\n/g, '<br>')}</td>
                   <td>${item.wish2.replace(/\n/g, '<br>')}</td>
                   <td>${item.wish3.replace(/\n/g, '<br>')}</td>
