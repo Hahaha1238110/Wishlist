@@ -14,10 +14,6 @@
       text-align: center;
     }
 
-    h1, h2 {
-      color: #555;
-    }
-
     form {
       margin: 20px auto;
       padding: 20px;
@@ -66,3 +62,31 @@
     table {
       width: 90%;
       margin: 20px auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+      word-wrap: break-word;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    /* 👇 New styles to make date column smaller */
+    th.date-time, td.date-time {
+      width: 150px;       /* fixed narrower width */
+      font-size: 13px;    /* smaller text */
+      color: #555;
+      whit
