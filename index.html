@@ -89,4 +89,110 @@
       width: 150px;       /* fixed narrower width */
       font-size: 13px;    /* smaller text */
       color: #555;
-      whit
+      white-space: normal; /* allow wrapping if needed */
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Submit Your Wishlist</h1>
+  <form id="wishlistForm" onsubmit="event.preventDefault(); saveWishlist();">
+    <label for="name">Name:</label>
+    <input type="text" id="name" placeholder="Enter your number 1-9" required>
+
+    <label for="wish1">Wish 1:</label>
+    <textarea id="wish1" placeholder="Enter your first wish" required></textarea>
+
+    <label for="wish2">Wish 2:</label>
+    <textarea id="wish2" placeholder="Enter your second wish" required></textarea>
+
+    <label for="wish3">Wish 3:</label>
+    <textarea id="wish3" placeholder="Enter your third wish" required></textarea>
+
+    <button type="submit">Add Wishlist</button>
+  </form>
+
+  <h2>All Wishlists:</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Wish 1</th>
+        <th>Wish 2</th>
+        <th>Wish 3</th>
+        <th class="date-time">Date & Time</th> <!-- 👈 Added class -->
+      </tr>
+    </thead>
+    <tbody id="wishlistsContainer"></tbody>
+  </table>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAHZbilFupWzHDpovfLwS_UkeozIqrGaUs",
+      authDomain: "wishlist-a9da8.firebaseapp.com",
+      databaseURL: "https://wishlist-a9da8-default-rtdb.firebaseio.com",
+      projectId: "wishlist-a9da8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Save wishlist with timestamp
+    window.saveWishlist = function saveWishlist() {
+      const name = document.getElementById("name").value;
+      const wish1 = document.getElementById("wish1").value;
+      const wish2 = document.getElementById("wish2").value;
+      const wish3 = document.getElementById("wish3").value;
+
+      if (name && wish1 && wish2 && wish3) {
+        const now = new Date();
+        const formattedDate = now.toLocaleString("en-PH", {
+          timeZone: "Asia/Manila",
+          hour12: true,
+        });
+
+        const wishlistRef = ref(db, 'wishlists/' + name);
+        set(wishlistRef, { name, wish1, wish2, wish3, timestamp: formattedDate })
+          .then(() => {
+            alert("Wishlist saved!");
+            document.getElementById("wishlistForm").reset();
+            loadWishlists();
+          })
+          .catch((error) => console.error("Error writing data:", error));
+      } else {
+        alert("Fill in all fields!");
+      }
+    };
+
+    // Load wishlists
+    function loadWishlists() {
+      const wishlistsRef = ref(db, 'wishlists');
+      get(wishlistsRef).then(snapshot => {
+        const container = document.getElementById("wishlistsContainer");
+        container.innerHTML = "";
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          for (const key in data) {
+            const item = data[key];
+            container.innerHTML += `
+              <tr>
+                <td>${item.name}</td>
+                <td>${item.wish1}</td>
+                <td>${item.wish2}</td>
+                <td>${item.wish3}</td>
+                <td class="date-time">${item.timestamp || "N/A"}</td>
+              </tr>`;
+          }
+        } else {
+          container.innerHTML = "<tr><td colspan='5'>No wishlists found.</td></tr>";
+        }
+      }).catch(error => console.error("Error reading data:", error));
+    }
+
+    window.onload = loadWishlists;
+  </script>
+</body>
+</html>
