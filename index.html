@@ -14,6 +14,10 @@
       text-align: center;
     }
 
+    h1, h2 {
+      color: #555;
+    }
+
     form {
       margin: 20px auto;
       padding: 20px;
@@ -84,12 +88,12 @@
       background-color: #f9f9f9;
     }
 
-    /* 👇 New styles to make date column smaller */
+    /* Make date/time column compact */
     th.date-time, td.date-time {
-      width: 150px;       /* fixed narrower width */
-      font-size: 13px;    /* smaller text */
+      width: 120px;
+      font-size: 13px;
       color: #555;
-      white-space: normal; /* allow wrapping if needed */
+      white-space: normal;
     }
   </style>
 </head>
@@ -120,7 +124,7 @@
         <th>Wish 1</th>
         <th>Wish 2</th>
         <th>Wish 3</th>
-        <th class="date-time">Date & Time</th> <!-- 👈 Added class -->
+        <th class="date-time">Date & Time</th>
       </tr>
     </thead>
     <tbody id="wishlistsContainer"></tbody>
@@ -142,26 +146,31 @@
 
     // Save wishlist with timestamp
     window.saveWishlist = function saveWishlist() {
-      const name = document.getElementById("name").value;
-      const wish1 = document.getElementById("wish1").value;
-      const wish2 = document.getElementById("wish2").value;
-      const wish3 = document.getElementById("wish3").value;
+      const name = document.getElementById("name").value.trim();
+      const wish1 = document.getElementById("wish1").value.trim();
+      const wish2 = document.getElementById("wish2").value.trim();
+      const wish3 = document.getElementById("wish3").value.trim();
 
       if (name && wish1 && wish2 && wish3) {
         const now = new Date();
-        const formattedDate = now.toLocaleString("en-PH", {
-          timeZone: "Asia/Manila",
-          hour12: true,
-        });
+        // Format like "03-Nov-2025 10:45 AM"
+        const options = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Manila' };
+        const formattedDate = now.toLocaleString('en-PH', options).replace(',', '');
 
         const wishlistRef = ref(db, 'wishlists/' + name);
-        set(wishlistRef, { name, wish1, wish2, wish3, timestamp: formattedDate })
-          .then(() => {
-            alert("Wishlist saved!");
-            document.getElementById("wishlistForm").reset();
-            loadWishlists();
-          })
-          .catch((error) => console.error("Error writing data:", error));
+        set(wishlistRef, {
+          name,
+          wish1,
+          wish2,
+          wish3,
+          timestamp: formattedDate
+        })
+        .then(() => {
+          alert("Wishlist saved!");
+          document.getElementById("wishlistForm").reset();
+          loadWishlists();
+        })
+        .catch((error) => console.error("Error writing data:", error));
       } else {
         alert("Fill in all fields!");
       }
@@ -170,29 +179,32 @@
     // Load wishlists
     function loadWishlists() {
       const wishlistsRef = ref(db, 'wishlists');
-      get(wishlistsRef).then(snapshot => {
-        const container = document.getElementById("wishlistsContainer");
-        container.innerHTML = "";
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          for (const key in data) {
-            const item = data[key];
-            container.innerHTML += `
-              <tr>
-                <td>${item.name}</td>
-                <td>${item.wish1}</td>
-                <td>${item.wish2}</td>
-                <td>${item.wish3}</td>
-                <td class="date-time">${item.timestamp || "N/A"}</td>
-              </tr>`;
+      get(wishlistsRef)
+        .then(snapshot => {
+          const container = document.getElementById("wishlistsContainer");
+          container.innerHTML = "";
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            for (const key in data) {
+              const item = data[key];
+              container.innerHTML += `
+                <tr>
+                  <td>${item.name}</td>
+                  <td>${item.wish1}</td>
+                  <td>${item.wish2}</td>
+                  <td>${item.wish3}</td>
+                  <td class="date-time">${item.timestamp || "N/A"}</td>
+                </tr>`;
+            }
+          } else {
+            container.innerHTML = "<tr><td colspan='5'>No wishlists found.</td></tr>";
           }
-        } else {
-          container.innerHTML = "<tr><td colspan='5'>No wishlists found.</td></tr>";
-        }
-      }).catch(error => console.error("Error reading data:", error));
+        })
+        .catch(error => console.error("Error reading data:", error));
     }
 
     window.onload = loadWishlists;
   </script>
+
 </body>
 </html>
