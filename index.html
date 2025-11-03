@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wishlist App</title>
   <style>
-    /* General Styling */
     body {
       font-family: Arial, sans-serif;
       background-color: #f9f9f9;
@@ -15,11 +14,6 @@
       text-align: center;
     }
 
-    h1, h2 {
-      color: #555;
-    }
-
-    /* Form Styling */
     form {
       margin: 20px auto;
       padding: 20px;
@@ -47,8 +41,8 @@
     }
 
     textarea {
-      height: 100px; /* Adjust height for multi-line */
-      resize: vertical; /* Allows resizing vertically */
+      height: 100px;
+      resize: vertical;
     }
 
     button {
@@ -65,9 +59,8 @@
       background-color: #218838;
     }
 
-    /* Table Styling */
     table {
-      width: 80%;
+      width: 90%;
       margin: 20px auto;
       border-collapse: collapse;
       background-color: #fff;
@@ -114,19 +107,16 @@
         <th>Wish 1</th>
         <th>Wish 2</th>
         <th>Wish 3</th>
+        <th>Date & Time</th>
       </tr>
     </thead>
-    <tbody id="wishlistsContainer">
-      <!-- Table rows will be dynamically generated here -->
-    </tbody>
+    <tbody id="wishlistsContainer"></tbody>
   </table>
 
   <script type="module">
-    // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
     import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAHZbilFupWzHDpovfLwS_UkeozIqrGaUs",
       authDomain: "wishlist-a9da8.firebaseapp.com",
@@ -134,11 +124,10 @@
       projectId: "wishlist-a9da8"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Attach the saveWishlist function to the global scope
+    // Save wishlist with timestamp
     window.saveWishlist = function saveWishlist() {
       const name = document.getElementById("name").value;
       const wish1 = document.getElementById("wish1").value;
@@ -146,22 +135,28 @@
       const wish3 = document.getElementById("wish3").value;
 
       if (name && wish1 && wish2 && wish3) {
+        const date = new Date();
+        const formattedDate = date.toLocaleString(); // e.g. "11/3/2025, 10:25:00 AM"
+
         const wishlistRef = ref(db, 'wishlists/' + name);
-        set(wishlistRef, { name, wish1, wish2, wish3 }).then(() => {
-          alert("Wishlist saved!");
-          loadWishlists();
-        }).catch((error) => console.error("Error writing data:", error));
+        set(wishlistRef, { name, wish1, wish2, wish3, timestamp: formattedDate })
+          .then(() => {
+            alert("Wishlist saved!");
+            loadWishlists();
+            document.getElementById("wishlistForm").reset();
+          })
+          .catch((error) => console.error("Error writing data:", error));
       } else {
         alert("Fill in all fields!");
       }
     };
 
-    // Function to load wishlists from Firebase
+    // Load wishlists with timestamps
     function loadWishlists() {
       const wishlistsRef = ref(db, 'wishlists');
       get(wishlistsRef).then(snapshot => {
         const container = document.getElementById("wishlistsContainer");
-        container.innerHTML = ""; // Clear existing content
+        container.innerHTML = "";
         if (snapshot.exists()) {
           const data = snapshot.val();
           for (const key in data) {
@@ -172,19 +167,16 @@
                 <td>${item.wish1}</td>
                 <td>${item.wish2}</td>
                 <td>${item.wish3}</td>
+                <td>${item.timestamp || "N/A"}</td>
               </tr>`;
           }
         } else {
-          container.innerHTML = "<tr><td colspan='4'>No wishlists found.</td></tr>";
+          container.innerHTML = "<tr><td colspan='5'>No wishlists found.</td></tr>";
         }
       }).catch(error => console.error("Error reading data:", error));
     }
 
-    // Load wishlists when the page loads
     window.onload = loadWishlists;
   </script>
-
 </body>
 </html>
-
-
