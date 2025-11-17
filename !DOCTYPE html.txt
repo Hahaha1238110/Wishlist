@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist App</title>
+  <style>
+    /* (same styles as before) */
+    body { font-family: Arial; background-color:#f9f9f9; color:#333; margin:0; padding:20px; text-align:center; }
+    form { margin:20px auto; padding:20px; background:#fff; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,.1); max-width:400px; }
+    label { display:block; font-size:16px; margin-bottom:8px; text-align:left; }
+    input[type="text"], textarea { width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box; }
+    input[type="text"] { text-align:center; }
+    textarea { height:100px; resize:vertical; }
+    button { padding:10px 20px; font-size:16px; color:#fff; background:#28a745; border:none; border-radius:5px; cursor:pointer; }
+    button:hover { background:#218838; }
+    table { width:90%; margin:20px auto; border-collapse:collapse; background:#fff; border-radius:10px; box-shadow:0 4px 6px rgba(0,0,0,.1); }
+    th, td { padding:10px; text-align:left; border:1px solid #ddd; word-wrap:break-word; white-space:pre-wrap; vertical-align:top; }
+    th { background:#f4f4f4; font-weight:bold; }
+    tr:nth-child(even) { background:#f9f9f9; }
+    th.Number, td.Number { width:60px; text-align:center; vertical-align:middle; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    th.date-time, td.date-time { width:140px; font-size:12px; color:#555; white-space:normal; }
+  </style>
+</head>
+<body>
+
+  <h1>Submit Your Wishlist</h1>
+  <form id="wishlistForm" onsubmit="event.preventDefault(); saveWishlist();">
+    <label for="Number">ID:</label>
+    <input type="text" id="Number" placeholder="Enter ID" required>
+
+    <label for="wish1">Wish 1:</label>
+    <textarea id="wish1" placeholder="Enter your first wish" required></textarea>
+
+    <label for="wish2">Wish 2:</label>
+    <textarea id="wish2" placeholder="Enter your second wish" required></textarea>
+
+    <label for="wish3">Wish 3:</label>
+    <textarea id="wish3" placeholder="Enter your third wish" required></textarea>
+
+    <button type="submit">Add Wishlist</button>
+  </form>
+
+  <h2>All Wishlists:</h2>
+  <table>
+    <thead>
+      <tr>
+        <th class="Number">ID</th>
+        <th>Wish 1</th>
+        <th>Wish 2</th>
+        <th>Wish 3</th>
+        <th class="date-time">Date & Time</th>
+      </tr>
+    </thead>
+    <tbody id="wishlistsContainer"></tbody>
+  </table>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAHZbilFupWzHDpovfLwS_UkeozIqrGaUs",
+      authDomain: "wishlist-a9da8.firebaseapp.com",
+      databaseURL: "https://wishlist-a9da8-default-rtdb.firebaseio.com",
+      projectId: "wishlist-a9da8"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Save wishlist
+    window.saveWishlist = function saveWishlist() {
+      const name = document.getElementById("Number").value.trim();
+      const wish1 = document.getElementById("wish1").value.trim();
+      const wish2 = document.getElementById("wish2").value.trim();
+      const wish3 = document.getElementById("wish3").value.trim();
+
+      if (name && wish1 && wish2 && wish3) {
+        const now = new Date();
+        const options = {
+          day: '2-digit', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', hour12: true,
+          timeZone: 'Asia/Manila'
+        };
+        const formattedDate = now.toLocaleString('en-PH', options).replace(',', '');
+
+        const wishlistRef = ref(db, 'wishlists');
+        push(wishlistRef, { name, wish1, wish2, wish3, timestamp: formattedDate })
+          .then(() => {
+            alert("Wishlist saved!");
+            document.getElementById("wishlistForm").reset();
+            loadWishlists();
+          })
+          .catch(error => {
+            console.error("Error writing data:", error);
+            alert("Error saving. See console for details.");
+          });
+      } else {
+        alert("Fill in all fields!");
+      }
+    };
+
+    // Load wishlists
+    function loadWishlists() {
+      const wishlistsRef = ref(db, 'wishlists');
+      get(wishlistsRef)
+        .then(snapshot => {
+          const container = document.getElementById("wishlistsContainer");
+          container.innerHTML = "";
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            for (const key in data) {
+              const item = data[key];
+              container.innerHTML += `
+                <tr>
+                  <td class="Number">${escapeHtml(item.name)}</td>
+                  <td>${item.wish1.replace(/\n/g, '<br>')}</td>
+                  <td>${item.wish2.replace(/\n/g, '<br>')}</td>
+                  <td>${item.wish3.replace(/\n/g, '<br>')}</td>
+                  <td class="date-time">${item.timestamp || "N/A"}</td>
+                </tr>`;
+            }
+          } else {
+            container.innerHTML = "
