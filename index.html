@@ -1,559 +1,489 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wishlist App</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist</title>
 
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f9f9f9;
-    color: #333;
-    margin: 0;
-    padding: 20px;
-  }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-  h1, h2 {
-    text-align: center;
-    color: #555;
-  }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f7f7f7;
+      color: #333;
+    }
 
-  form {
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  }
+    h1 {
+      text-align: center;
+    }
 
-  label {
-    display: block;
-    font-weight: bold;
-    margin: 12px 0 6px;
-  }
+    .form-container {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px #00000015;
+    }
 
-  input, textarea {
-    width: 100%;
-    padding: 11px;
-    margin-bottom: 10px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-  }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
 
-  textarea {
-    height: 65px;
-    resize: vertical;
-  }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
 
-  .wish-section {
-    padding: 12px;
-    margin: 15px 0;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #fafafa;
-  }
+    button {
+      padding: 10px 16px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 5px;
+      background: #2563eb;
+      color: white;
+      cursor: pointer;
+    }
 
-  .wish-section h3 {
-    margin-top: 0;
-    color: #28a745;
-  }
+    button:hover {
+      background: #1d4ed8;
+    }
 
-  button {
-    padding: 10px 18px;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-  }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-  button:hover {
-    background: #218838;
-  }
+    .wishlist-section {
+      border-top: 1px solid #ddd;
+      margin-top: 20px;
+      padding-top: 10px;
+    }
 
-  .table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    margin-top: 20px;
-  }
+    .preview {
+      display: none;
+      max-width: 150px;
+      max-height: 150px;
+      object-fit: contain;
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
 
-  table {
-    width: 100%;
-    min-width: 950px;
-    border-collapse: collapse;
-    background: white;
-  }
+    .table-container {
+      overflow-x: auto;
+      margin-top: 30px;
+      background: white;
+      border-radius: 8px;
+    }
 
-  th, td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-    vertical-align: top;
-  }
+    table {
+      width: 100%;
+      min-width: 850px;
+      border-collapse: collapse;
+    }
 
-  th {
-    background: #f0f0f0;
-    text-align: center;
-  }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+      vertical-align: top;
+    }
 
-  td.Number {
-    text-align: center;
-    font-weight: bold;
-    vertical-align: middle;
-    width: 60px;
-  }
+    th {
+      background: #2563eb;
+      color: white;
+    }
 
-  .wish-cell {
-    min-width: 190px;
-    max-width: 260px;
-    overflow-wrap: anywhere;
-  }
+    .wishlist-cell img {
+      display: block;
+      max-width: 120px;
+      max-height: 120px;
+      object-fit: contain;
+      margin: 8px auto;
+    }
 
-  .wish-description {
-    white-space: pre-wrap;
-    margin-bottom: 10px;
-    line-height: 1.4;
-  }
+    .wishlist-cell a {
+      display: inline-block;
+      margin-top: 5px;
+      color: #2563eb;
+      word-break: break-word;
+    }
 
-  .wish-link {
-    display: block;
-    margin: 8px 0;
-    color: #007bff;
-  }
+    .empty {
+      color: #999;
+    }
 
-  .wish-image {
-    display: block;
-    max-width: 150px;
-    max-height: 150px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    margin-top: 10px;
-    border-radius: 6px;
-  }
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+    }
 
-  .empty {
-    color: #aaa;
-    text-align: center;
-  }
+    .success {
+      color: green;
+    }
 
-  .timestamp {
-    min-width: 130px;
-    font-size: 12px;
-    color: #666;
-  }
-
-  .actions {
-    margin-top: 8px;
-  }
-
-  .edit-btn {
-    background: #007bff;
-    margin-right: 5px;
-  }
-
-  .delete-btn {
-    background: #dc3545;
-  }
-
-  .edit-btn:hover {
-    background: #0069d9;
-  }
-
-  .delete-btn:hover {
-    background: #c82333;
-  }
-</style>
+    .error {
+      color: red;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>Submit Your Wishlist</h1>
+  <h1>My Wishlist</h1>
 
-<form id="wishlistForm">
+  <div class="form-container">
+    <form id="wishlistForm">
 
-  <label for="Number">Number (1-12):</label>
-  <input
-    type="number"
-    id="Number"
-    min="1"
-    max="12"
-    step="1"
-    placeholder="Enter 1-12"
-    required
-  >
+      <label for="number">Number (1–12)</label>
+      <input
+        type="number"
+        id="number"
+        min="1"
+        max="12"
+        step="1"
+        required
+      >
 
-  <!-- WISHLIST 1 -->
-  <div class="wish-section">
-    <h3>Wishlist 1</h3>
+      <div class="wishlist-section">
+        <h3>Wishlist 1</h3>
 
-    <label for="description1">Description:</label>
-    <textarea id="description1" required
-      placeholder="Enter description"></textarea>
+        <label for="description1">Description</label>
+        <input type="text" id="description1" required>
 
-    <label for="link1">Link:</label>
-    <input type="url" id="link1" required
-      placeholder="Paste product link (https://...)">
+        <label for="link1">Link</label>
+        <input type="url" id="link1" placeholder="https://example.com" required>
 
-    <label for="picture1">Picture URL:</label>
-    <input type="url" id="picture1" required
-      placeholder="Paste image URL (https://...)">
+        <label for="picture1">Picture URL</label>
+        <input type="url" id="picture1" placeholder="Direct image URL" required>
+        <img id="preview1" class="preview" alt="Wishlist 1 preview">
+      </div>
+
+      <div class="wishlist-section">
+        <h3>Wishlist 2</h3>
+
+        <label for="description2">Description</label>
+        <input type="text" id="description2" required>
+
+        <label for="link2">Link</label>
+        <input type="url" id="link2" placeholder="https://example.com" required>
+
+        <label for="picture2">Picture URL</label>
+        <input type="url" id="picture2" placeholder="Direct image URL" required>
+        <img id="preview2" class="preview" alt="Wishlist 2 preview">
+      </div>
+
+      <div class="wishlist-section">
+        <h3>Wishlist 3</h3>
+
+        <label for="description3">Description</label>
+        <input type="text" id="description3" required>
+
+        <label for="link3">Link</label>
+        <input type="url" id="link3" placeholder="https://example.com" required>
+
+        <label for="picture3">Picture URL</label>
+        <input type="url" id="picture3" placeholder="Direct image URL" required>
+        <img id="preview3" class="preview" alt="Wishlist 3 preview">
+      </div>
+
+      <button type="submit" id="saveButton">Save Wishlist</button>
+      <p id="status" class="status"></p>
+    </form>
   </div>
 
-  <!-- WISHLIST 2 -->
-  <div class="wish-section">
-    <h3>Wishlist 2</h3>
+  <h2>Wishlist Records</h2>
 
-    <label for="description2">Description:</label>
-    <textarea id="description2" required
-      placeholder="Enter description"></textarea>
-
-    <label for="link2">Link:</label>
-    <input type="url" id="link2" required
-      placeholder="Paste product link (https://...)">
-
-    <label for="picture2">Picture URL:</label>
-    <input type="url" id="picture2" required
-      placeholder="Paste image URL (https://...)">
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Wishlist 1</th>
+          <th>Wishlist 2</th>
+          <th>Wishlist 3</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody id="wishlistTable">
+        <tr>
+          <td colspan="5">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
-  <!-- WISHLIST 3 -->
-  <div class="wish-section">
-    <h3>Wishlist 3</h3>
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 
-    <label for="description3">Description:</label>
-    <textarea id="description3" required
-      placeholder="Enter description"></textarea>
+    import {
+      getDatabase,
+      ref,
+      set,
+      get,
+      onValue
+    } from
+      "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
-    <label for="link3">Link:</label>
-    <input type="url" id="link3" required
-      placeholder="Paste product link (https://...)">
+    // Replace with your existing Firebase configuration.
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      databaseURL: "https://wishlist-a9da8-default-rtdb.firebaseio.com",
+      projectId: "wishlist-a9da8",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-    <label for="picture3">Picture URL:</label>
-    <input type="url" id="picture3" required
-      placeholder="Paste image URL (https://...)">
-  </div>
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-  <button type="submit" id="submitButton">
-    Add Wishlist
-  </button>
+    const wishlistRef = ref(db, "wishlist_items");
 
-</form>
+    const form = document.getElementById("wishlistForm");
+    const saveButton = document.getElementById("saveButton");
+    const status = document.getElementById("status");
+    const tableBody = document.getElementById("wishlistTable");
 
-
-<h2>All Wishlists</h2>
-
-<div class="table-wrapper">
-<table>
-  <thead>
-    <tr>
-      <th>Number</th>
-      <th>Wishlist 1</th>
-      <th>Wishlist 2</th>
-      <th>Wishlist 3</th>
-      <th>Timestamp</th>
-    </tr>
-  </thead>
-
-  <tbody id="wishlistsContainer">
-    <tr>
-      <td colspan="5" class="empty">Loading...</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-<script type="module">
-
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-
-import {
-  getDatabase,
-  ref,
-  get,
-  set,
-  remove
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
-
-
-// FIREBASE CONFIGURATION
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAHZbilFupWzHDpovfLwS_UkeozIqrGaUs",
-  authDomain: "wishlist-a9da8.firebaseapp.com",
-  databaseURL: "https://wishlist-a9da8-default-rtdb.firebaseio.com",
-  projectId: "wishlist-a9da8"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-const form = document.getElementById("wishlistForm");
-const container = document.getElementById("wishlistsContainer");
-
-const wishlistPath = "wishlist_items";
-
-
-// GET PHILIPPINE TIMESTAMP
-
-function getTimestamp() {
-  return new Date().toLocaleString("en-PH", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-    timeZone: "Asia/Manila"
-  });
-}
-
-
-// VALIDATE URL
-
-function safeURL(value) {
-  try {
-    const url = new URL(value);
-
-    if (url.protocol === "http:" || url.protocol === "https:") {
-      return url.href;
+    // Only allow HTTP and HTTPS URLs.
+    function isValidWebURL(value) {
+      try {
+        const url = new URL(value);
+        return url.protocol === "https:" || url.protocol === "http:";
+      } catch {
+        return false;
+      }
     }
 
-    return "";
-  } catch {
-    return "";
-  }
-}
+    // Test whether the URL actually loads an image.
+    function testImageURL(value) {
+      return new Promise((resolve) => {
+        const image = new Image();
 
+        image.onload = () => resolve(true);
+        image.onerror = () => resolve(false);
 
-// SAVE WISHLIST
-
-form.addEventListener("submit", async function(event) {
-
-  event.preventDefault();
-
-  const number = Number(document.getElementById("Number").value);
-
-  if (!Number.isInteger(number) || number < 1 || number > 12) {
-    alert("Please enter a whole number from 1 to 12.");
-    return;
-  }
-
-  const wishes = [];
-
-  for (let i = 1; i <= 3; i++) {
-
-    const description =
-      document.getElementById("description" + i).value.trim();
-
-    const link =
-      document.getElementById("link" + i).value.trim();
-
-    const picture =
-      document.getElementById("picture" + i).value.trim();
-
-    if (!description || !link || !picture) {
-      alert("Please complete all fields in Wishlist " + i + ".");
-      return;
+        image.src = value;
+      });
     }
 
-    const validLink = safeURL(link);
-    const validPicture = safeURL(picture);
+    // Preview and validate each picture URL.
+    for (let i = 1; i <= 3; i++) {
+      const pictureInput = document.getElementById(`picture${i}`);
+      const preview = document.getElementById(`preview${i}`);
 
-    if (!validLink || !validPicture) {
-      alert("Please enter valid URLs in Wishlist " + i + ".");
-      return;
+      pictureInput.addEventListener("change", async () => {
+        const url = pictureInput.value.trim();
+
+        preview.style.display = "none";
+
+        if (!url) return;
+
+        if (!isValidWebURL(url)) {
+          alert(`Wishlist ${i}: Please enter a valid HTTP or HTTPS URL.`);
+          pictureInput.value = "";
+          return;
+        }
+
+        status.textContent = `Checking Wishlist ${i} image...`;
+        status.className = "status";
+
+        const valid = await testImageURL(url);
+
+        if (valid) {
+          preview.src = url;
+          preview.style.display = "block";
+          status.textContent = "Image loaded successfully.";
+          status.className = "status success";
+        } else {
+          alert(
+            `Wishlist ${i}: The image could not be loaded. ` +
+            `Please use a direct, publicly accessible image URL.`
+          );
+
+          pictureInput.value = "";
+          preview.src = "";
+          status.textContent = "Image validation failed.";
+          status.className = "status error";
+        }
+      });
     }
 
-    wishes.push({
-      description: description,
-      link: validLink,
-      picture: validPicture
+    // Save or update a wishlist record.
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const number = Number(document.getElementById("number").value);
+
+      if (!Number.isInteger(number) || number < 1 || number > 12) {
+        alert("Please enter a whole number from 1 to 12.");
+        return;
+      }
+
+      const wishes = [];
+
+      for (let i = 1; i <= 3; i++) {
+        const description =
+          document.getElementById(`description${i}`).value.trim();
+
+        const link =
+          document.getElementById(`link${i}`).value.trim();
+
+        const picture =
+          document.getElementById(`picture${i}`).value.trim();
+
+        if (!description || !link || !picture) {
+          alert(`Please complete all fields in Wishlist ${i}.`);
+          return;
+        }
+
+        if (!isValidWebURL(link) || !isValidWebURL(picture)) {
+          alert(`Please enter valid HTTP or HTTPS URLs in Wishlist ${i}.`);
+          return;
+        }
+
+        wishes.push({ description, link, picture });
+      }
+
+      saveButton.disabled = true;
+      saveButton.textContent = "Checking images...";
+      status.textContent = "Validating all three images...";
+      status.className = "status";
+
+      try {
+        // Check all images again before saving.
+        const imageChecks = await Promise.all(
+          wishes.map(wish => testImageURL(wish.picture))
+        );
+
+        const failedIndex = imageChecks.findIndex(valid => !valid);
+
+        if (failedIndex !== -1) {
+          throw new Error(
+            `Wishlist ${failedIndex + 1} has an image that cannot be loaded.`
+          );
+        }
+
+        saveButton.textContent = "Saving...";
+
+        const record = {
+          number,
+          wish1: wishes[0],
+          wish2: wishes[1],
+          wish3: wishes[2],
+          timestamp: new Date().toLocaleString("en-PH", {
+            timeZone: "Asia/Manila"
+          }),
+          updatedAt: Date.now()
+        };
+
+        // Same number updates the existing record.
+        await set(ref(db, `wishlist_items/${number}`), record);
+
+        status.textContent = `Wishlist for Number ${number} saved successfully!`;
+        status.className = "status success";
+
+        form.reset();
+
+        for (let i = 1; i <= 3; i++) {
+          const preview = document.getElementById(`preview${i}`);
+          preview.src = "";
+          preview.style.display = "none";
+        }
+
+      } catch (error) {
+        status.textContent = error.message || "Unable to save wishlist.";
+        status.className = "status error";
+      } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = "Save Wishlist";
+      }
     });
-  }
 
-  const submitButton = document.getElementById("submitButton");
-  submitButton.disabled = true;
+    // Display one row for each number, from 1 to 12.
+    function renderTable(data) {
+      tableBody.innerHTML = "";
 
-  try {
+      for (let number = 1; number <= 12; number++) {
+        const record = data?.[number];
+        const row = document.createElement("tr");
 
-    const itemRef = ref(db, wishlistPath + "/" + number);
-    const snapshot = await get(itemRef);
+        const numberCell = document.createElement("td");
+        numberCell.textContent = number;
+        row.appendChild(numberCell);
 
-    const existing = snapshot.exists() ? snapshot.val() : null;
+        for (let i = 1; i <= 3; i++) {
+          const cell = document.createElement("td");
+          cell.className = "wishlist-cell";
 
-    const wishlistData = {
-      name: String(number),
-      wish1: wishes[0],
-      wish2: wishes[1],
-      wish3: wishes[2],
-      timestamp: existing?.timestamp || getTimestamp(),
-      updatedAt: existing ? getTimestamp() : null
-    };
+          const wish = record?.[`wish${i}`];
 
-    await set(itemRef, wishlistData);
+          if (wish) {
+            const description = document.createElement("div");
+            description.textContent = wish.description || "";
+            cell.appendChild(description);
 
-    alert("Wishlist Number " + number + " saved successfully!");
+            if (wish.link && isValidWebURL(wish.link)) {
+              const link = document.createElement("a");
+              link.href = wish.link;
+              link.textContent = "View Link";
+              link.target = "_blank";
+              link.rel = "noopener noreferrer";
+              cell.appendChild(link);
+            }
 
-    form.reset();
+            if (wish.picture && isValidWebURL(wish.picture)) {
+              const image = document.createElement("img");
+              image.src = wish.picture;
+              image.alt = wish.description || "Wishlist image";
+              image.loading = "lazy";
 
-    submitButton.textContent = "Add Wishlist";
+              image.onerror = () => {
+                image.remove();
+                const note = document.createElement("div");
+                note.className = "empty";
+                note.textContent = "Image unavailable";
+                cell.appendChild(note);
+              };
 
-    await loadWishlists();
+              cell.appendChild(image);
+            }
+          } else {
+            cell.innerHTML = '<span class="empty">—</span>';
+          }
 
-  } catch(error) {
+          row.appendChild(cell);
+        }
 
-    console.error("Firebase error:", error);
-    alert("Unable to save wishlist. Please check Firebase permissions.");
+        const timestampCell = document.createElement("td");
+        timestampCell.textContent = record?.timestamp || "—";
+        row.appendChild(timestampCell);
 
-  } finally {
-
-    submitButton.disabled = false;
-
-  }
-
-});
-
-
-// DISPLAY ONE WISHLIST INSIDE ONE TABLE CELL
-
-function createWishCell(wish) {
-
-  const cell = document.createElement("td");
-  cell.className = "wish-cell";
-
-  if (!wish || typeof wish !== "object") {
-    cell.innerHTML = '<span class="empty">No entry</span>';
-    return cell;
-  }
-
-  // Description
-
-  const description = document.createElement("div");
-  description.className = "wish-description";
-  description.textContent = wish.description || "";
-
-  cell.appendChild(description);
-
-  // Link
-
-  const linkURL = safeURL(wish.link);
-
-  if (linkURL) {
-
-    const link = document.createElement("a");
-
-    link.href = linkURL;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.className = "wish-link";
-    link.textContent = "View Link";
-
-    cell.appendChild(link);
-  }
-
-  // Picture
-
-  const pictureURL = safeURL(wish.picture);
-
-  if (pictureURL) {
-
-    const image = document.createElement("img");
-
-    image.src = pictureURL;
-    image.alt = "Wishlist Picture";
-    image.className = "wish-image";
-    image.loading = "lazy";
-
-    image.onerror = function() {
-      this.alt = "Picture unavailable";
-      this.style.display = "none";
-    };
-
-    cell.appendChild(image);
-  }
-
-  return cell;
-}
-
-
-// LOAD ALL WISHLISTS
-
-async function loadWishlists() {
-
-  try {
-
-    const snapshot = await get(ref(db, wishlistPath));
-
-    const data = snapshot.exists() ? snapshot.val() : {};
-
-    container.innerHTML = "";
-
-    // Always display Numbers 1 to 12
-
-    for (let number = 1; number <= 12; number++) {
-
-      const item = data[number] || null;
-
-      const row = document.createElement("tr");
-
-      // NUMBER
-
-      const numberCell = document.createElement("td");
-      numberCell.className = "Number";
-      numberCell.textContent = number;
-
-      row.appendChild(numberCell);
-
-      // WISHLIST 1, 2, 3
-
-      row.appendChild(createWishCell(item?.wish1));
-      row.appendChild(createWishCell(item?.wish2));
-      row.appendChild(createWishCell(item?.wish3));
-
-      // TIMESTAMP
-
-      const timestampCell = document.createElement("td");
-      timestampCell.className = "timestamp";
-
-      timestampCell.textContent = item
-        ? (item.updatedAt
-            ? "Added: " + item.timestamp + "\nUpdated: " + item.updatedAt
-            : item.timestamp || "N/A")
-        : "N/A";
-
-      row.appendChild(timestampCell);
-
-      container.appendChild(row);
-
+        tableBody.appendChild(row);
+      }
     }
 
-  } catch(error) {
+    // Listen for real-time Firebase updates.
+    onValue(wishlistRef, (snapshot) => {
+      renderTable(snapshot.val() || {});
+    }, (error) => {
+      tableBody.innerHTML =
+        `<tr><td colspan="5">Unable to load data: ${error.message}</td></tr>`;
+    });
 
-    console.error("Error loading wishlists:", error);
-
-    container.innerHTML =
-      '<tr><td colspan="5" class="empty">Unable to load wishlists.</td></tr>';
-
-  }
-
-}
-
-
-// INITIAL LOAD
-
-loadWishlists();
-
-</script>
+  </script>
 
 </body>
 </html>
