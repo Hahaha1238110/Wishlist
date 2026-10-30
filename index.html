@@ -1,9 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wishlist App</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,7 +36,8 @@
       text-align: left;
     }
 
-    input[type="text"], textarea {
+    input[type="number"],
+    textarea {
       width: 100%;
       padding: 12px;
       margin-bottom: 15px;
@@ -44,7 +47,7 @@
       box-sizing: border-box;
     }
 
-    input[type="text"] {
+    input[type="number"] {
       text-align: center;
     }
 
@@ -80,8 +83,8 @@
       padding: 10px;
       text-align: left;
       border: 1px solid #ddd;
-      word-wrap: break-word;
-      white-space: pre-wrap; /* preserves line breaks */
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
       vertical-align: top;
     }
 
@@ -95,7 +98,8 @@
     }
 
     /* Number column styling */
-    th.Number, td.Number {
+    th.Number,
+    td.Number {
       width: 60px;
       text-align: center;
       vertical-align: middle;
@@ -105,35 +109,60 @@
     }
 
     /* Date/Time column styling */
-    th.date-time, td.date-time {
+    th.date-time,
+    td.date-time {
       width: 140px;
       font-size: 12px;
       color: #555;
       white-space: normal;
     }
-
   </style>
 </head>
+
 <body>
 
   <h1>Submit Your Wishlist</h1>
-  <form id="wishlistForm" onsubmit="event.preventDefault(); saveWishlist();">
+
+  <form id="wishlistForm">
+
     <label for="Number">Number (1-12):</label>
-    <input type="text" id="Number" placeholder="Enter 1-12" maxlength="1" pattern="[0-12]" title="Enter a number from 1 to 12" required>
+    <input
+      type="number"
+      id="Number"
+      placeholder="Enter 1-12"
+      min="1"
+      max="12"
+      step="1"
+      required
+    >
 
     <label for="wish1">Wish 1:</label>
-    <textarea id="wish1" placeholder="Enter your first wish" required></textarea>
+    <textarea
+      id="wish1"
+      placeholder="Enter your first wish"
+      required
+    ></textarea>
 
     <label for="wish2">Wish 2:</label>
-    <textarea id="wish2" placeholder="Enter your second wish" required></textarea>
+    <textarea
+      id="wish2"
+      placeholder="Enter your second wish"
+      required
+    ></textarea>
 
     <label for="wish3">Wish 3:</label>
-    <textarea id="wish3" placeholder="Enter your third wish" required></textarea>
+    <textarea
+      id="wish3"
+      placeholder="Enter your third wish"
+      required
+    ></textarea>
 
     <button type="submit">Add Wishlist</button>
+
   </form>
 
   <h2>All Wishlists:</h2>
+
   <table>
     <thead>
       <tr>
@@ -141,16 +170,30 @@
         <th>Wish 1</th>
         <th>Wish 2</th>
         <th>Wish 3</th>
-        <th class="date-time">Date & Time</th>
+        <th class="date-time">Date &amp; Time</th>
       </tr>
     </thead>
-    <tbody id="wishlistsContainer"></tbody>
+
+    <tbody id="wishlistsContainer">
+      <tr>
+        <td colspan="5">Loading wishlists...</td>
+      </tr>
+    </tbody>
   </table>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getDatabase, ref, set, get, push } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+
+    import {
+      getDatabase,
+      ref,
+      get,
+      push
+    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAHZbilFupWzHDpovfLwS_UkeozIqrGaUs",
       authDomain: "wishlist-a9da8.firebaseapp.com",
@@ -158,69 +201,180 @@
       projectId: "wishlist-a9da8"
     };
 
+
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Save wishlist to Firebase
-    window.saveWishlist = function saveWishlist() {
-      const name = document.getElementById("Number").value.trim();
+
+    // Submit wishlist
+    const wishlistForm = document.getElementById("wishlistForm");
+
+    wishlistForm.addEventListener("submit", async function(event) {
+
+      event.preventDefault();
+
+      const numberInput = document.getElementById("Number");
+      const name = numberInput.value.trim();
+
+      const number = Number(name);
+
       const wish1 = document.getElementById("wish1").value.trim();
       const wish2 = document.getElementById("wish2").value.trim();
       const wish3 = document.getElementById("wish3").value.trim();
 
-      if (name && wish1 && wish2 && wish3) {
-        const now = new Date();
-        const options = { 
-          day: '2-digit', month: 'short', year: 'numeric', 
-          hour: '2-digit', minute: '2-digit', hour12: true, 
-          timeZone: 'Asia/Manila' 
-        };
-        const formattedDate = now.toLocaleString('en-PH', options).replace(',', '');
 
-        const wishlistRef = ref(db, 'wishlists');
-        push(wishlistRef, { name, wish1, wish2, wish3, timestamp: formattedDate })
-          .then(() => {
-            alert("Wishlist saved!");
-            document.getElementById("wishlistForm").reset();
-            loadWishlists();
-          })
-          .catch(error => console.error("Error writing data:", error));
-      } else {
-        alert("Fill in all fields!");
+      // Validate number from 1 to 12
+      if (
+        name === "" ||
+        !Number.isInteger(number) ||
+        number < 1 ||
+        number > 12
+      ) {
+        alert("Please enter a whole number from 1 to 12.");
+        numberInput.focus();
+        return;
       }
-    };
+
+
+      // Validate wishlist fields
+      if (!wish1 || !wish2 || !wish3) {
+        alert("Please fill in all wishlist fields.");
+        return;
+      }
+
+
+      // Format date and time using Philippine time
+      const now = new Date();
+
+      const options = {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: "Asia/Manila"
+      };
+
+      const formattedDate = now
+        .toLocaleString("en-PH", options)
+        .replace(",", "");
+
+
+      // Save wishlist to Firebase
+      const wishlistRef = ref(db, "wishlists");
+
+      try {
+
+        await push(wishlistRef, {
+          name: String(number),
+          wish1: wish1,
+          wish2: wish2,
+          wish3: wish3,
+          timestamp: formattedDate
+        });
+
+        alert("Wishlist saved successfully!");
+
+        wishlistForm.reset();
+
+        await loadWishlists();
+
+      } catch (error) {
+
+        console.error("Error saving wishlist:", error);
+
+        alert("Unable to save wishlist. Please check your internet connection and Firebase database permissions.");
+
+      }
+
+    });
+
 
     // Load wishlists from Firebase
-    function loadWishlists() {
-      const wishlistsRef = ref(db, 'wishlists');
-      get(wishlistsRef)
-        .then(snapshot => {
-          const container = document.getElementById("wishlistsContainer");
-          container.innerHTML = "";
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            for (const key in data) {
-              const item = data[key];
-              container.innerHTML += `
-                <tr>
-                  <td class="Number">${item.name}</td>
-                  <td>${item.wish1.replace(/\n/g, '<br>')}</td>
-                  <td>${item.wish2.replace(/\n/g, '<br>')}</td>
-                  <td>${item.wish3.replace(/\n/g, '<br>')}</td>
-                  <td class="date-time">${item.timestamp || "N/A"}</td>
-                </tr>`;
-            }
-          } else {
-            container.innerHTML = "<tr><td colspan='5'>No wishlists found.</td></tr>";
+    async function loadWishlists() {
+
+      const wishlistsRef = ref(db, "wishlists");
+      const container = document.getElementById("wishlistsContainer");
+
+      try {
+
+        const snapshot = await get(wishlistsRef);
+
+        container.innerHTML = "";
+
+        if (snapshot.exists()) {
+
+          const data = snapshot.val();
+
+          for (const key in data) {
+
+            const item = data[key];
+
+            const row = document.createElement("tr");
+
+
+            // Number column
+            const numberCell = document.createElement("td");
+            numberCell.className = "Number";
+            numberCell.textContent = item.name ?? "";
+            row.appendChild(numberCell);
+
+
+            // Wish 1 column
+            const wish1Cell = document.createElement("td");
+            wish1Cell.textContent = item.wish1 ?? "";
+            row.appendChild(wish1Cell);
+
+
+            // Wish 2 column
+            const wish2Cell = document.createElement("td");
+            wish2Cell.textContent = item.wish2 ?? "";
+            row.appendChild(wish2Cell);
+
+
+            // Wish 3 column
+            const wish3Cell = document.createElement("td");
+            wish3Cell.textContent = item.wish3 ?? "";
+            row.appendChild(wish3Cell);
+
+
+            // Date and time column
+            const dateCell = document.createElement("td");
+            dateCell.className = "date-time";
+            dateCell.textContent = item.timestamp ?? "N/A";
+            row.appendChild(dateCell);
+
+
+            container.appendChild(row);
+
           }
-        })
-        .catch(error => console.error("Error reading data:", error));
+
+        } else {
+
+          container.innerHTML =
+            "<tr><td colspan='5'>No wishlists found.</td></tr>";
+
+        }
+
+      } catch (error) {
+
+        console.error("Error loading wishlists:", error);
+
+        container.innerHTML =
+          "<tr><td colspan='5'>Unable to load wishlists. Please try again later.</td></tr>";
+
+      }
+
     }
 
-    window.onload = loadWishlists;
+
+    // Load wishlists when the page opens
+    loadWishlists();
+
   </script>
 
 </body>
 </html>
-
-
+```
