@@ -1,854 +1,820 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Wishlist</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist</title>
 
-<style>
-* { box-sizing: border-box; }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  background: #f7f7f7;
-  color: #333;
-}
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
 
-h1, h2 { text-align: center; }
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
 
-.form-container {
-  max-width: 850px;
-  margin: 20px auto;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px #00000015;
-}
+    h1, h2 {
+      text-align: center;
+    }
 
-label {
-  display: block;
-  margin-top: 12px;
-  font-weight: bold;
-}
+    .number-section {
+      margin-bottom: 25px;
+    }
 
-input {
-  width: 100%;
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 12px 0 6px;
+    }
 
-button {
-  padding: 9px 14px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 5px;
-  background: #2563eb;
-  color: white;
-  cursor: pointer;
-}
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
 
-button:hover { background: #1d4ed8; }
+    input:disabled, select:disabled {
+      background: #eee;
+    }
 
-button:disabled {
-  opacity: .6;
-  cursor: not-allowed;
-}
+    .wishlist-section {
+      border: 1px solid #ddd;
+      padding: 18px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
 
-.add-button {
-  background: #15803d;
-}
+    .wishlist-section h3 {
+      margin-top: 0;
+      color: #333;
+    }
 
-.remove-button {
-  background: #dc2626;
-  padding: 7px 10px;
-  margin-top: 5px;
-}
+    .field-group {
+      margin-bottom: 15px;
+    }
 
-.wishlist-section {
-  border-top: 1px solid #ddd;
-  margin-top: 25px;
-  padding-top: 10px;
-}
+    .dynamic-field {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
 
-.entry-group {
-  background: #fafafa;
-  padding: 12px;
-  border: 1px solid #eee;
-  border-radius: 7px;
-  margin-top: 10px;
-}
+    .dynamic-field input {
+      flex: 1;
+      min-width: 0;
+    }
 
-.image-help {
-  font-size: 13px;
-  color: #666;
-  margin: 6px 0;
-}
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
 
-.image-help a {
-  color: #2563eb;
-  font-weight: bold;
-  text-decoration: none;
-}
+    .add-btn {
+      background: #e8e8e8;
+      color: #333;
+      margin-top: 5px;
+    }
 
-.image-help a:hover {
-  text-decoration: underline;
-}
+    .remove-btn {
+      background: #dc3545;
+      color: white;
+      flex-shrink: 0;
+    }
 
-.preview {
-  display: none;
-  max-width: 130px;
-  max-height: 130px;
-  object-fit: contain;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
+    .submit-btn {
+      width: 100%;
+      background: #198754;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 15px;
+    }
 
-.image-item {
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-}
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
 
-.image-status {
-  font-size: 12px;
-  margin-top: 5px;
-}
+    .image-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
 
-.table-container {
-  overflow-x: auto;
-  margin-top: 20px;
-  background: white;
-  border-radius: 8px;
-}
+    .image-preview img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
 
-table {
-  width: 100%;
-  min-width: 950px;
-  border-collapse: collapse;
-}
+    .image-status {
+      font-size: 12px;
+      margin-top: 5px;
+    }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: center;
-  vertical-align: top;
-}
+    .help-text {
+      font-size: 13px;
+      color: #666;
+      margin: 6px 0 10px;
+    }
 
-th {
-  background: #2563eb;
-  color: white;
-}
+    .help-text a {
+      color: #007bff;
+    }
 
-.wishlist-cell {
-  min-width: 200px;
-}
+    .table-container {
+      overflow-x: auto;
+      margin-top: 30px;
+    }
 
-.wish-item {
-  border-bottom: 1px solid #ddd;
-  padding: 10px 0;
-  margin-bottom: 8px;
-}
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 850px;
+    }
 
-.wish-item:last-child {
-  border-bottom: none;
-}
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+      vertical-align: top;
+    }
 
-.wish-item img {
-  display: block;
-  max-width: 120px;
-  max-height: 120px;
-  object-fit: contain;
-  margin: 8px auto;
-}
+    th {
+      background: #f0f0f0;
+    }
 
-.wish-links a {
-  display: block;
-  margin: 5px 0;
-  word-break: break-word;
-}
+    .wishlist-cell img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      margin: 5px 5px 5px 0;
+      border-radius: 5px;
+    }
 
-.empty { color: #999; }
+    .wishlist-cell a {
+      display: block;
+      margin: 5px 0;
+      word-break: break-word;
+    }
 
-.status {
-  margin-top: 10px;
-  font-size: 14px;
-}
+    .wishlist-description {
+      font-weight: bold;
+      margin-bottom: 8px;
+      white-space: pre-wrap;
+    }
 
-.success { color: green; }
-.error { color: red; }
+    .timestamp {
+      font-size: 12px;
+      color: #666;
+    }
 
-.help-text {
-  color: #666;
-  font-size: 12px;
-  line-height: 1.5;
-}
-</style>
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+
+      .dynamic-field {
+        align-items: stretch;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>My Wishlist</h1>
+<div class="container">
 
-<div class="form-container">
+  <h1>Wishlist</h1>
 
-<form id="wishlistForm">
+  <form id="wishlistForm">
 
-<label for="number">Number (1–12)</label>
-<input type="number" id="number" min="1" max="12"
-       step="1" required>
+    <div class="number-section">
+      <label for="number">Choose Number:</label>
 
-<div id="wishlistForms"></div>
+      <select id="number" required>
+        <option value="">Select a number</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
+    </div>
 
-<p class="help-text">
-  You can add multiple links and pictures for each wishlist.
-  For pictures, use direct image URLs from ImageToURLs.
-</p>
+    <div id="wishlistForms"></div>
 
-<button type="submit" id="saveButton">Save Wishlist</button>
+    <button type="submit" class="submit-btn" id="submitBtn">
+      Submit Wishlist
+    </button>
 
-<p id="status" class="status"></p>
+  </form>
 
-</form>
+  <h2>Submitted Wishlists</h2>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Number</th>
+          <th>Wishlist 1</th>
+          <th>Wishlist 2</th>
+          <th>Wishlist 3</th>
+          <th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody id="wishlistTable"></tbody>
+    </table>
+  </div>
+
 </div>
-
-<h2>Wishlist Records</h2>
-
-<div class="table-container">
-<table>
-<thead>
-<tr>
-  <th>Number</th>
-  <th>Wishlist 1</th>
-  <th>Wishlist 2</th>
-  <th>Wishlist 3</th>
-  <th>Timestamp</th>
-</tr>
-</thead>
-
-<tbody id="wishlistTable">
-<tr><td colspan="5">Loading...</td></tr>
-</tbody>
-</table>
-</div>
-
 
 <script type="module">
 
-// =====================================
-// FIREBASE IMPORTS
-// =====================================
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+  import {
+    getDatabase,
+    ref,
+    set,
+    get,
+    onValue
+  } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
-import {
-  getDatabase,
-  ref,
-  set,
-  onValue
-} from
-"https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
+  // =====================================
+  // FIREBASE CONFIGURATION
+  // =====================================
 
-// =====================================
-// FIREBASE CONFIGURATION
-// =====================================
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://wishlist-a9da8-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT",
+    appId: "YOUR_APP_ID"
+  };
 
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://wishlist-a9da8-default-rtdb.firebaseio.com",
-  projectId: "wishlist-a9da8",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+  const wishlistRef = ref(db, "wishlist_items");
 
-const wishlistRef = ref(db, "wishlist_items");
 
+  // =====================================
+  // CREATE WISHLIST FORM FIELDS
+  // =====================================
 
-// =====================================
-// ELEMENTS
-// =====================================
-
-const form = document.getElementById("wishlistForm");
-const wishlistForms = document.getElementById("wishlistForms");
-const tableBody = document.getElementById("wishlistTable");
-const saveButton = document.getElementById("saveButton");
-const status = document.getElementById("status");
-
-
-// =====================================
-// CREATE THREE WISHLIST FORMS
-// =====================================
-
-for (let i = 1; i <= 3; i++) {
-
-  const section = document.createElement("div");
-
-  section.className = "wishlist-section";
-  section.id = `wishlistSection${i}`;
-
-  section.innerHTML = `
-    <h3>Wishlist ${i}</h3>
-
-    <label>Description</label>
-    <input type="text" id="description${i}" required>
-
-    <div class="entry-group">
-      <strong>Links</strong>
-      <div id="links${i}"></div>
-      <button type="button" class="add-button"
-        id="addLink${i}">
-        + Add Link
-      </button>
-    </div>
-
-    <div class="entry-group">
-      <strong>Pictures</strong>
-
-      <p class="image-help">
-        Don't have an image URL?
-        <a href="https://imagetourls.com/"
-           target="_blank"
-           rel="noopener noreferrer">
-          Upload your image here and get a URL
-        </a>
-      </p>
-
-      <div id="pictures${i}"></div>
-
-      <button type="button" class="add-button"
-        id="addPicture${i}">
-        + Add Picture
-      </button>
-    </div>
-  `;
-
-  wishlistForms.appendChild(section);
-
-}
-
-
-// =====================================
-// URL VALIDATION
-// =====================================
-
-function isValidWebURL(value) {
-
-  try {
-    const url = new URL(value);
-
-    return url.protocol === "https:" ||
-           url.protocol === "http:";
-
-  } catch {
-    return false;
-  }
-
-}
-
-
-// =====================================
-// TEST IMAGE URL
-// =====================================
-
-function testImageURL(value) {
-
-  return new Promise((resolve) => {
-
-    const image = new Image();
-
-    image.onload = () => resolve(true);
-    image.onerror = () => resolve(false);
-
-    image.src = value;
-
-  });
-
-}
-
-
-// =====================================
-// ADD LINK FIELD
-// =====================================
-
-function addLinkField(number, value = "") {
-
-  const container =
-    document.getElementById(`links${number}`);
-
-  const item = document.createElement("div");
-
-  item.className = "link-item";
-
-  const input = document.createElement("input");
-
-  input.type = "url";
-  input.placeholder = "https://example.com";
-  input.required = true;
-  input.value = value;
-
-  const remove = document.createElement("button");
-
-  remove.type = "button";
-  remove.className = "remove-button";
-  remove.textContent = "Remove Link";
-
-  remove.addEventListener("click", () => {
-    item.remove();
-  });
-
-  item.appendChild(input);
-  item.appendChild(remove);
-
-  container.appendChild(item);
-
-}
-
-
-// =====================================
-// ADD PICTURE FIELD
-// =====================================
-
-function addPictureField(number, value = "") {
-
-  const container =
-    document.getElementById(`pictures${number}`);
-
-  const item = document.createElement("div");
-
-  item.className = "image-item";
-
-  const input = document.createElement("input");
-
-  input.type = "url";
-  input.placeholder = "Paste direct image URL here";
-  input.required = true;
-  input.value = value;
-
-  const preview = document.createElement("img");
-
-  preview.className = "preview";
-  preview.alt = "Image preview";
-
-  const imageStatus = document.createElement("div");
-
-  imageStatus.className = "image-status";
-
-  const remove = document.createElement("button");
-
-  remove.type = "button";
-  remove.className = "remove-button";
-  remove.textContent = "Remove Picture";
-
-  async function checkImage() {
-
-    const url = input.value.trim();
-
-    preview.style.display = "none";
-    preview.src = "";
-    imageStatus.textContent = "";
-
-    if (!url) return;
-
-    if (!isValidWebURL(url)) {
-
-      imageStatus.textContent =
-        "Please enter a valid HTTP or HTTPS URL.";
-
-      imageStatus.className = "image-status error";
-      return;
-    }
-
-    imageStatus.textContent = "Checking image...";
-
-    const valid = await testImageURL(url);
-
-    if (valid) {
-
-      preview.src = url;
-      preview.style.display = "block";
-
-      imageStatus.textContent = "Image loaded successfully.";
-      imageStatus.className = "image-status success";
-
-    } else {
-
-      imageStatus.textContent =
-        "Image unavailable. Please use a direct image URL.";
-
-      imageStatus.className = "image-status error";
-
-    }
-  }
-
-  input.addEventListener("change", checkImage);
-
-  remove.addEventListener("click", () => {
-    item.remove();
-  });
-
-  item.appendChild(input);
-  item.appendChild(preview);
-  item.appendChild(imageStatus);
-  item.appendChild(remove);
-
-  container.appendChild(item);
-
-  if (value) checkImage();
-
-}
-
-
-// =====================================
-// INITIALIZE FIELDS
-// =====================================
-
-for (let i = 1; i <= 3; i++) {
-
-  addLinkField(i);
-  addPictureField(i);
-
-  document.getElementById(`addLink${i}`)
-    .addEventListener("click", () => addLinkField(i));
-
-  document.getElementById(`addPicture${i}`)
-    .addEventListener("click", () => addPictureField(i));
-
-}
-
-
-// =====================================
-// COLLECT WISHLIST DATA
-// =====================================
-
-async function collectWishlist(number) {
-
-  const wishes = [];
+  const wishlistForms = document.getElementById("wishlistForms");
 
   for (let i = 1; i <= 3; i++) {
 
-    const description =
-      document.getElementById(`description${i}`)
-        .value.trim();
+    const section = document.createElement("div");
+    section.className = "wishlist-section";
 
-    const linkInputs =
-      document.querySelectorAll(`#links${i} input`);
+    section.innerHTML = `
+      <h3>Wishlist ${i}</h3>
 
-    const pictureInputs =
-      document.querySelectorAll(`#pictures${i} input`);
+      <div class="field-group">
+        <label>Description:</label>
+        <input
+          type="text"
+          id="description${i}"
+          placeholder="Enter wishlist description"
+          required
+        >
+      </div>
 
-    if (!description) {
-      throw new Error(`Please enter Wishlist ${i} description.`);
-    }
+      <div class="field-group">
+        <label>Links:</label>
+        <div id="links${i}"></div>
 
-    const links = Array.from(linkInputs)
-      .map(input => input.value.trim())
-      .filter(Boolean);
+        <button type="button" class="add-btn"
+          id="addLink${i}">
+          + Add Link
+        </button>
+      </div>
 
-    const pictures = Array.from(pictureInputs)
-      .map(input => input.value.trim())
-      .filter(Boolean);
+      <div class="field-group">
+        <label>Pictures:</label>
 
-    if (links.length === 0) {
-      throw new Error(`Please add at least one link to Wishlist ${i}.`);
-    }
+        <p class="help-text">
+          Upload your picture at
+          <a href="https://imagetourls.com/"
+             target="_blank" rel="noopener noreferrer">
+            ImageToURLs
+          </a>
+          and paste the generated direct image URL below.
+        </p>
 
-    if (pictures.length === 0) {
-      throw new Error(`Please add at least one picture to Wishlist ${i}.`);
-    }
+        <div id="pictures${i}"></div>
 
-    for (const link of links) {
+        <button type="button" class="add-btn"
+          id="addPicture${i}">
+          + Add Picture
+        </button>
+      </div>
+    `;
 
-      if (!isValidWebURL(link)) {
-        throw new Error(`Wishlist ${i} contains an invalid link.`);
-      }
+    wishlistForms.appendChild(section);
 
-    }
+    addLinkField(i);
+    addPictureField(i);
 
-    for (const picture of pictures) {
+    document.getElementById(`addLink${i}`)
+      .addEventListener("click", () => addLinkField(i));
 
-      if (!isValidWebURL(picture)) {
-        throw new Error(`Wishlist ${i} contains an invalid picture URL.`);
-      }
-
-    }
-
-    wishes.push({
-      description,
-      links,
-      pictures
-    });
-
+    document.getElementById(`addPicture${i}`)
+      .addEventListener("click", () => addPictureField(i));
   }
 
-  // Verify that every picture can actually load.
-  for (let i = 0; i < wishes.length; i++) {
 
-    for (let j = 0; j < wishes[i].pictures.length; j++) {
+  // =====================================
+  // ADD LINK FIELD
+  // =====================================
 
-      status.textContent =
-        `Checking Wishlist ${i + 1}, picture ${j + 1}...`;
+  function addLinkField(index) {
 
-      const valid = await testImageURL(
-        wishes[i].pictures[j]
-      );
+    const container = document.getElementById(`links${index}`);
 
-      if (!valid) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "dynamic-field";
+
+    const input = document.createElement("input");
+    input.type = "url";
+    input.placeholder = "Enter website or product link";
+    input.required = true;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "remove-btn";
+    removeBtn.textContent = "Remove";
+
+    removeBtn.addEventListener("click", () => {
+      wrapper.remove();
+    });
+
+    wrapper.appendChild(input);
+    wrapper.appendChild(removeBtn);
+
+    container.appendChild(wrapper);
+  }
+
+
+  // =====================================
+  // ADD PICTURE FIELD
+  // =====================================
+
+  function addPictureField(index) {
+
+    const container = document.getElementById(`pictures${index}`);
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "field-group";
+
+    const inputRow = document.createElement("div");
+    inputRow.className = "dynamic-field";
+
+    const input = document.createElement("input");
+    input.type = "url";
+    input.placeholder = "Paste direct image URL";
+    input.required = true;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "remove-btn";
+    removeBtn.textContent = "Remove";
+
+    const preview = document.createElement("div");
+    preview.className = "image-preview";
+
+    const status = document.createElement("div");
+    status.className = "image-status";
+
+    input.addEventListener("change", async () => {
+
+      preview.innerHTML = "";
+      status.textContent = "";
+
+      const url = input.value.trim();
+
+      if (!url) return;
+
+      if (!isValidWebURL(url)) {
+        status.textContent = "Please enter a valid HTTP or HTTPS URL.";
+        status.style.color = "red";
+        return;
+      }
+
+      status.textContent = "Checking image...";
+      status.style.color = "#666";
+
+      try {
+        await testImageURL(url);
+
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = "Wishlist image preview";
+
+        preview.appendChild(img);
+
+        status.textContent = "Image loaded successfully.";
+        status.style.color = "green";
+
+      } catch (error) {
+        status.textContent = "Image could not be loaded. Check the URL.";
+        status.style.color = "red";
+      }
+    });
+
+    removeBtn.addEventListener("click", () => {
+      wrapper.remove();
+    });
+
+    inputRow.appendChild(input);
+    inputRow.appendChild(removeBtn);
+
+    wrapper.appendChild(inputRow);
+    wrapper.appendChild(preview);
+    wrapper.appendChild(status);
+
+    container.appendChild(wrapper);
+  }
+
+
+  // =====================================
+  // VALIDATE URL
+  // =====================================
+
+  function isValidWebURL(value) {
+
+    try {
+      const url = new URL(value);
+
+      return url.protocol === "http:" ||
+             url.protocol === "https:";
+
+    } catch {
+      return false;
+    }
+  }
+
+
+  // =====================================
+  // TEST IMAGE URL
+  // =====================================
+
+  function testImageURL(url) {
+
+    return new Promise((resolve, reject) => {
+
+      const img = new Image();
+
+      img.onload = () => resolve(true);
+      img.onerror = () => reject(new Error("Image failed to load"));
+
+      img.src = url;
+    });
+  }
+
+
+  // =====================================
+  // COLLECT WISHLIST DATA
+  // =====================================
+
+  async function collectWishlist(index) {
+
+    const description = document
+      .getElementById(`description${index}`)
+      .value.trim();
+
+    if (!description) {
+      throw new Error(`Please enter a description for Wishlist ${index}.`);
+    }
+
+    // Collect links
+    const linkInputs = document
+      .querySelectorAll(`#links${index} input`);
+
+    const links = [];
+
+    for (const input of linkInputs) {
+
+      const url = input.value.trim();
+
+      if (!url || !isValidWebURL(url)) {
+        throw new Error(`Please enter valid links for Wishlist ${index}.`);
+      }
+
+      links.push(url);
+    }
+
+    if (links.length === 0) {
+      throw new Error(`Please add at least one link for Wishlist ${index}.`);
+    }
+
+    // Collect pictures
+    const pictureInputs = document
+      .querySelectorAll(`#pictures${index} input`);
+
+    const pictures = [];
+
+    for (const input of pictureInputs) {
+
+      const url = input.value.trim();
+
+      if (!url || !isValidWebURL(url)) {
+        throw new Error(`Please enter valid picture URLs for Wishlist ${index}.`);
+      }
+
+      try {
+        await testImageURL(url);
+      } catch {
         throw new Error(
-          `Wishlist ${i + 1}, picture ${j + 1} cannot be loaded. ` +
-          `Please check the image URL.`
+          `One of the pictures in Wishlist ${index} could not be loaded. Please check the URL.`
         );
       }
 
+      pictures.push(url);
     }
 
-  }
+    if (pictures.length === 0) {
+      throw new Error(`Please add at least one picture for Wishlist ${index}.`);
+    }
 
-  return wishes;
-
-}
-
-
-// =====================================
-// SAVE OR UPDATE WISHLIST
-// =====================================
-
-form.addEventListener("submit", async (event) => {
-
-  event.preventDefault();
-
-  const number = Number(
-    document.getElementById("number").value
-  );
-
-  if (!Number.isInteger(number) || number < 1 || number > 12) {
-
-    alert("Please enter a whole number from 1 to 12.");
-    return;
-
-  }
-
-  saveButton.disabled = true;
-  saveButton.textContent = "Checking...";
-
-  try {
-
-    const wishes = await collectWishlist(number);
-
-    status.textContent = "Saving wishlist...";
-
-    const record = {
-
-      number,
-
-      wish1: wishes[0],
-      wish2: wishes[1],
-      wish3: wishes[2],
-
-      timestamp: new Date().toLocaleString("en-PH", {
-        timeZone: "Asia/Manila"
-      }),
-
-      updatedAt: Date.now()
-
+    return {
+      description,
+      links,
+      pictures
     };
-
-    // Existing number is updated, not duplicated.
-    await set(
-      ref(db, `wishlist_items/${number}`),
-      record
-    );
-
-    status.textContent =
-      `Wishlist for Number ${number} saved successfully!`;
-
-    status.className = "status success";
-
-    form.reset();
-
-    // Restore one empty link and picture field per wishlist.
-    for (let i = 1; i <= 3; i++) {
-
-      document.getElementById(`links${i}`).innerHTML = "";
-      document.getElementById(`pictures${i}`).innerHTML = "";
-
-      addLinkField(i);
-      addPictureField(i);
-
-    }
-
-  } catch (error) {
-
-    console.error(error);
-
-    status.textContent =
-      error.message || "Unable to save wishlist.";
-
-    status.className = "status error";
-
-  } finally {
-
-    saveButton.disabled = false;
-    saveButton.textContent = "Save Wishlist";
-
   }
 
-});
+
+  // =====================================
+  // UPDATE NUMBER DROPDOWN
+  // =====================================
+
+  function updateNumberDropdown(data) {
+
+    const numberSelect = document.getElementById("number");
+
+    Array.from(numberSelect.options).forEach(option => {
+
+      if (option.value === "") return;
+
+      const numberAlreadyUsed = !!data[option.value];
+
+      option.disabled = numberAlreadyUsed;
+
+      option.textContent = numberAlreadyUsed
+        ? `${option.value} - Already Taken`
+        : option.value;
+    });
+
+    if (numberSelect.value && data[numberSelect.value]) {
+      numberSelect.value = "";
+    }
+  }
 
 
-// =====================================
-// DISPLAY WISHLIST TABLE
-// =====================================
+  // =====================================
+  // SUBMIT WISHLIST
+  // =====================================
 
-function renderTable(data) {
+  document.getElementById("wishlistForm")
+    .addEventListener("submit", async (event) => {
 
-  tableBody.innerHTML = "";
+      event.preventDefault();
 
-  for (let number = 1; number <= 12; number++) {
+      const submitBtn = document.getElementById("submitBtn");
+      const number = document.getElementById("number").value;
 
-    const record = data[number];
-
-    const row = document.createElement("tr");
-
-    const numberCell = document.createElement("td");
-    numberCell.textContent = number;
-
-    row.appendChild(numberCell);
-
-    for (let i = 1; i <= 3; i++) {
-
-      const cell = document.createElement("td");
-      cell.className = "wishlist-cell";
-
-      const wish = record?.[`wish${i}`];
-
-      if (wish) {
-
-        const item = document.createElement("div");
-        item.className = "wish-item";
-
-        const description = document.createElement("strong");
-        description.textContent = wish.description || "";
-
-        item.appendChild(description);
-
-        // Multiple clickable links.
-        const linksContainer = document.createElement("div");
-        linksContainer.className = "wish-links";
-
-        const links = Array.isArray(wish.links)
-          ? wish.links
-          : (wish.link ? [wish.link] : []);
-
-        links.forEach((url, index) => {
-
-          if (!isValidWebURL(url)) return;
-
-          const link = document.createElement("a");
-
-          link.href = url;
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.textContent = `View Link ${index + 1}`;
-
-          linksContainer.appendChild(link);
-
-        });
-
-        item.appendChild(linksContainer);
-
-        // Multiple images.
-        const pictures = Array.isArray(wish.pictures)
-          ? wish.pictures
-          : (wish.picture ? [wish.picture] : []);
-
-        pictures.forEach((url) => {
-
-          if (!isValidWebURL(url)) return;
-
-          const image = document.createElement("img");
-
-          image.src = url;
-          image.alt = wish.description || "Wishlist image";
-          image.loading = "lazy";
-
-          image.onerror = () => {
-            image.remove();
-          };
-
-          item.appendChild(image);
-
-        });
-
-        cell.appendChild(item);
-
-      } else {
-
-        const empty = document.createElement("span");
-
-        empty.className = "empty";
-        empty.textContent = "—";
-
-        cell.appendChild(empty);
-
+      if (!number) {
+        alert("Please select a number.");
+        return;
       }
 
-      row.appendChild(cell);
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
 
-    }
+      try {
 
-    const timestampCell = document.createElement("td");
+        // Check Firebase for an existing number
+        const numberRef = ref(db, `wishlist_items/${number}`);
+        const existingRecord = await get(numberRef);
 
-    timestampCell.textContent =
-      record?.timestamp || "—";
+        if (existingRecord.exists()) {
 
-    row.appendChild(timestampCell);
+          alert(
+            `Number ${number} has already been taken. Please select another number.`
+          );
 
-    tableBody.appendChild(row);
+          document.getElementById("number").value = "";
+          return;
+        }
 
+        // Collect all three wishlists
+        const wish1 = await collectWishlist(1);
+        const wish2 = await collectWishlist(2);
+        const wish3 = await collectWishlist(3);
+
+        const record = {
+
+          number: Number(number),
+
+          wish1,
+          wish2,
+          wish3,
+
+          timestamp: new Date().toLocaleString("en-PH", {
+            timeZone: "Asia/Manila"
+          }),
+
+          updatedAt: Date.now()
+        };
+
+        // Save to Firebase
+        await set(numberRef, record);
+
+        alert(`Wishlist for Number ${number} submitted successfully!`);
+
+        document.getElementById("wishlistForm").reset();
+
+        // Reset dynamic fields
+        for (let i = 1; i <= 3; i++) {
+
+          document.getElementById(`links${i}`).innerHTML = "";
+          document.getElementById(`pictures${i}`).innerHTML = "";
+
+          addLinkField(i);
+          addPictureField(i);
+        }
+
+      } catch (error) {
+
+        alert(error.message || "Something went wrong. Please try again.");
+
+      } finally {
+
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit Wishlist";
+      }
+    });
+
+
+  // =====================================
+  // DISPLAY WISHLIST DATA
+  // =====================================
+
+  function renderWishlist(wish) {
+
+    if (!wish) return "No entry";
+
+    const cell = document.createElement("div");
+    cell.className = "wishlist-cell";
+
+    const description = document.createElement("div");
+    description.className = "wishlist-description";
+    description.textContent = wish.description || "";
+
+    cell.appendChild(description);
+
+    // Support old records with a single link
+    const links = Array.isArray(wish.links)
+      ? wish.links
+      : (wish.link ? [wish.link] : []);
+
+    links.forEach((url, index) => {
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = `View Link ${index + 1}`;
+
+      cell.appendChild(link);
+    });
+
+    // Support old records with a single picture
+    const pictures = Array.isArray(wish.pictures)
+      ? wish.pictures
+      : (wish.picture ? [wish.picture] : []);
+
+    pictures.forEach(url => {
+
+      const img = document.createElement("img");
+
+      img.src = url;
+      img.alt = "Wishlist picture";
+      img.loading = "lazy";
+
+      cell.appendChild(img);
+    });
+
+    return cell;
   }
 
-}
 
+  function renderTable(data) {
 
-// =====================================
-// REAL-TIME FIREBASE LISTENER
-// =====================================
-
-onValue(
-
-  wishlistRef,
-
-  (snapshot) => {
-    renderTable(snapshot.val() || {});
-  },
-
-  (error) => {
+    const tableBody = document.getElementById("wishlistTable");
 
     tableBody.innerHTML = "";
 
-    const row = document.createElement("tr");
-    const cell = document.createElement("td");
+    for (let i = 1; i <= 12; i++) {
 
-    cell.colSpan = 5;
-    cell.textContent =
-      "Unable to load data: " + error.message;
+      const record = data[i];
 
-    row.appendChild(cell);
-    tableBody.appendChild(row);
+      const row = document.createElement("tr");
 
+      const numberCell = document.createElement("td");
+      numberCell.textContent = i;
+
+      const wish1Cell = document.createElement("td");
+      const wish2Cell = document.createElement("td");
+      const wish3Cell = document.createElement("td");
+
+      if (record) {
+
+        wish1Cell.appendChild(renderWishlist(record.wish1));
+        wish2Cell.appendChild(renderWishlist(record.wish2));
+        wish3Cell.appendChild(renderWishlist(record.wish3));
+
+      } else {
+
+        wish1Cell.textContent = "-";
+        wish2Cell.textContent = "-";
+        wish3Cell.textContent = "-";
+      }
+
+      const timestampCell = document.createElement("td");
+      timestampCell.className = "timestamp";
+      timestampCell.textContent = record?.timestamp || "-";
+
+      row.appendChild(numberCell);
+      row.appendChild(wish1Cell);
+      row.appendChild(wish2Cell);
+      row.appendChild(wish3Cell);
+      row.appendChild(timestampCell);
+
+      tableBody.appendChild(row);
+    }
   }
 
-);
+
+  // =====================================
+  // REAL-TIME FIREBASE LISTENER
+  // =====================================
+
+  onValue(wishlistRef, (snapshot) => {
+
+    const data = snapshot.val() || {};
+
+    // Refresh the table
+    renderTable(data);
+
+    // Disable numbers already submitted
+    updateNumberDropdown(data);
+
+  }, (error) => {
+
+    console.error("Firebase read error:", error);
+    alert("Unable to load wishlist records. Please check your connection.");
+
+  });
 
 </script>
 
