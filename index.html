@@ -1,14 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wishlist</title>
+  <title>My Wishlist</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: Arial, sans-serif;
@@ -17,12 +16,10 @@
       color: #333;
     }
 
-    h1 {
-      text-align: center;
-    }
+    h1, h2 { text-align: center; }
 
     .form-container {
-      max-width: 700px;
+      max-width: 750px;
       margin: 20px auto;
       padding: 20px;
       background: white;
@@ -45,7 +42,7 @@
     }
 
     button {
-      padding: 10px 16px;
+      padding: 11px 16px;
       margin-top: 15px;
       border: none;
       border-radius: 5px;
@@ -54,12 +51,10 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background: #1d4ed8;
-    }
+    button:hover { background: #1d4ed8; }
 
     button:disabled {
-      opacity: 0.6;
+      opacity: .6;
       cursor: not-allowed;
     }
 
@@ -69,19 +64,55 @@
       padding-top: 10px;
     }
 
+    .paste-area {
+      border: 2px dashed #aaa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 8px;
+      text-align: center;
+      background: #fafafa;
+      cursor: text;
+      outline: none;
+    }
+
+    .paste-area:focus,
+    .paste-area.dragover {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+
+    .paste-area p {
+      margin: 5px;
+      color: #666;
+      font-size: 14px;
+    }
+
     .preview {
       display: none;
-      max-width: 150px;
-      max-height: 150px;
+      max-width: 180px;
+      max-height: 180px;
       object-fit: contain;
-      margin-top: 10px;
-      border: 1px solid #ddd;
+      margin: 12px auto 0;
       border-radius: 5px;
+    }
+
+    .image-name {
+      font-size: 12px;
+      color: #555;
+      margin-top: 5px;
+      word-break: break-word;
+    }
+
+    .remove-image {
+      background: #dc2626;
+      margin-top: 8px;
+      font-size: 12px;
+      padding: 6px 10px;
     }
 
     .table-container {
       overflow-x: auto;
-      margin-top: 30px;
+      margin-top: 20px;
       background: white;
       border-radius: 8px;
     }
@@ -119,21 +150,20 @@
       word-break: break-word;
     }
 
-    .empty {
-      color: #999;
-    }
+    .empty { color: #999; }
 
     .status {
       margin-top: 10px;
       font-size: 14px;
     }
 
-    .success {
-      color: green;
-    }
+    .success { color: green; }
+    .error { color: red; }
 
-    .error {
-      color: red;
+    .help-text {
+      color: #666;
+      font-size: 12px;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -143,6 +173,7 @@
   <h1>My Wishlist</h1>
 
   <div class="form-container">
+
     <form id="wishlistForm">
 
       <label for="number">Number (1–12)</label>
@@ -155,6 +186,7 @@
         required
       >
 
+      <!-- WISHLIST 1 -->
       <div class="wishlist-section">
         <h3>Wishlist 1</h3>
 
@@ -162,13 +194,23 @@
         <input type="text" id="description1" required>
 
         <label for="link1">Link</label>
-        <input type="url" id="link1" placeholder="https://example.com" required>
+        <input type="url" id="link1"
+          placeholder="https://example.com" required>
 
-        <label for="picture1">Picture URL</label>
-        <input type="url" id="picture1" placeholder="Direct image URL" required>
-        <img id="preview1" class="preview" alt="Wishlist 1 preview">
+        <label>Picture</label>
+
+        <div class="paste-area" id="pasteArea1" tabindex="0">
+          <p><strong>Click here and press Ctrl + V</strong></p>
+          <p>Or choose an image from your device below.</p>
+          <input type="file" id="file1" accept="image/jpeg,image/png,image/webp,image/gif">
+          <img id="preview1" class="preview" alt="Wishlist 1 preview">
+          <div id="filename1" class="image-name"></div>
+          <button type="button" class="remove-image"
+            id="remove1" style="display:none">Remove Image</button>
+        </div>
       </div>
 
+      <!-- WISHLIST 2 -->
       <div class="wishlist-section">
         <h3>Wishlist 2</h3>
 
@@ -176,13 +218,23 @@
         <input type="text" id="description2" required>
 
         <label for="link2">Link</label>
-        <input type="url" id="link2" placeholder="https://example.com" required>
+        <input type="url" id="link2"
+          placeholder="https://example.com" required>
 
-        <label for="picture2">Picture URL</label>
-        <input type="url" id="picture2" placeholder="Direct image URL" required>
-        <img id="preview2" class="preview" alt="Wishlist 2 preview">
+        <label>Picture</label>
+
+        <div class="paste-area" id="pasteArea2" tabindex="0">
+          <p><strong>Click here and press Ctrl + V</strong></p>
+          <p>Or choose an image from your device below.</p>
+          <input type="file" id="file2" accept="image/jpeg,image/png,image/webp,image/gif">
+          <img id="preview2" class="preview" alt="Wishlist 2 preview">
+          <div id="filename2" class="image-name"></div>
+          <button type="button" class="remove-image"
+            id="remove2" style="display:none">Remove Image</button>
+        </div>
       </div>
 
+      <!-- WISHLIST 3 -->
       <div class="wishlist-section">
         <h3>Wishlist 3</h3>
 
@@ -190,15 +242,31 @@
         <input type="text" id="description3" required>
 
         <label for="link3">Link</label>
-        <input type="url" id="link3" placeholder="https://example.com" required>
+        <input type="url" id="link3"
+          placeholder="https://example.com" required>
 
-        <label for="picture3">Picture URL</label>
-        <input type="url" id="picture3" placeholder="Direct image URL" required>
-        <img id="preview3" class="preview" alt="Wishlist 3 preview">
+        <label>Picture</label>
+
+        <div class="paste-area" id="pasteArea3" tabindex="0">
+          <p><strong>Click here and press Ctrl + V</strong></p>
+          <p>Or choose an image from your device below.</p>
+          <input type="file" id="file3" accept="image/jpeg,image/png,image/webp,image/gif">
+          <img id="preview3" class="preview" alt="Wishlist 3 preview">
+          <div id="filename3" class="image-name"></div>
+          <button type="button" class="remove-image"
+            id="remove3" style="display:none">Remove Image</button>
+        </div>
       </div>
 
+      <p class="help-text">
+        Supported image formats: JPG, PNG, WEBP and GIF.
+        Maximum image size: 5 MB per picture.
+      </p>
+
       <button type="submit" id="saveButton">Save Wishlist</button>
+
       <p id="status" class="status"></p>
+
     </form>
   </div>
 
@@ -215,117 +283,300 @@
           <th>Timestamp</th>
         </tr>
       </thead>
+
       <tbody id="wishlistTable">
-        <tr>
-          <td colspan="5">Loading...</td>
-        </tr>
+        <tr><td colspan="5">Loading...</td></tr>
       </tbody>
     </table>
   </div>
 
   <script type="module">
+
     import { initializeApp } from
       "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
 
     import {
       getDatabase,
-      ref,
+      ref as dbRef,
       set,
-      get,
       onValue
     } from
       "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
-    // Replace with your existing Firebase configuration.
+    import {
+      getStorage,
+      ref as storageRef,
+      uploadBytes,
+      getDownloadURL
+    } from
+      "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
+
+
+    // =====================================
+    // FIREBASE CONFIGURATION
+    // =====================================
+
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
       authDomain: "YOUR_PROJECT.firebaseapp.com",
       databaseURL: "https://wishlist-a9da8-default-rtdb.firebaseio.com",
       projectId: "wishlist-a9da8",
-      storageBucket: "YOUR_PROJECT.appspot.com",
+      storageBucket: "YOUR_ACTUAL_STORAGE_BUCKET",
       messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
       appId: "YOUR_APP_ID"
     };
 
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
 
-    const wishlistRef = ref(db, "wishlist_items");
+    const db = getDatabase(app);
+    const storage = getStorage(app);
+
+    const wishlistRef = dbRef(db, "wishlist_items");
+
+
+    // =====================================
+    // ELEMENTS AND IMAGE STORAGE
+    // =====================================
 
     const form = document.getElementById("wishlistForm");
     const saveButton = document.getElementById("saveButton");
     const status = document.getElementById("status");
     const tableBody = document.getElementById("wishlistTable");
 
-    // Only allow HTTP and HTTPS URLs.
+    // Keeps selected or pasted image files temporarily.
+    const selectedImages = {
+      1: null,
+      2: null,
+      3: null
+    };
+
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+    const ALLOWED_TYPES = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif"
+    ];
+
+
+    // =====================================
+    // IMAGE VALIDATION
+    // =====================================
+
+    function validateImageFile(file) {
+
+      if (!file) {
+        throw new Error("Please select an image.");
+      }
+
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        throw new Error(
+          "Unsupported image format. Use JPG, PNG, WEBP or GIF."
+        );
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        throw new Error("Image size must not exceed 5 MB.");
+      }
+
+      return true;
+    }
+
+
+    // =====================================
+    // IMAGE PREVIEW
+    // =====================================
+
+    function setImage(number, file) {
+
+      try {
+        validateImageFile(file);
+
+        const preview = document.getElementById(`preview${number}`);
+        const filename = document.getElementById(`filename${number}`);
+        const removeButton = document.getElementById(`remove${number}`);
+
+        // Release previous temporary preview URL.
+        if (preview.dataset.objectUrl) {
+          URL.revokeObjectURL(preview.dataset.objectUrl);
+        }
+
+        const objectURL = URL.createObjectURL(file);
+
+        selectedImages[number] = file;
+
+        preview.src = objectURL;
+        preview.dataset.objectUrl = objectURL;
+        preview.style.display = "block";
+
+        filename.textContent = file.name || "Pasted image";
+        removeButton.style.display = "inline-block";
+
+        status.textContent = `Wishlist ${number}: Image ready.`;
+        status.className = "status success";
+
+      } catch (error) {
+        selectedImages[number] = null;
+        alert(error.message);
+      }
+    }
+
+
+    // =====================================
+    // REMOVE IMAGE
+    // =====================================
+
+    function clearImage(number) {
+
+      const preview = document.getElementById(`preview${number}`);
+
+      if (preview.dataset.objectUrl) {
+        URL.revokeObjectURL(preview.dataset.objectUrl);
+      }
+
+      selectedImages[number] = null;
+
+      preview.src = "";
+      preview.style.display = "none";
+      preview.dataset.objectUrl = "";
+
+      document.getElementById(`filename${number}`).textContent = "";
+      document.getElementById(`file${number}`).value = "";
+      document.getElementById(`remove${number}`).style.display = "none";
+    }
+
+
+    // =====================================
+    // FILE UPLOAD AND COPY-PASTE
+    // =====================================
+
+    for (let i = 1; i <= 3; i++) {
+
+      const pasteArea = document.getElementById(`pasteArea${i}`);
+      const fileInput = document.getElementById(`file${i}`);
+      const removeButton = document.getElementById(`remove${i}`);
+
+      // Upload from device.
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+
+        if (file) {
+          setImage(i, file);
+        }
+      });
+
+      // Paste image using Ctrl + V.
+      pasteArea.addEventListener("paste", (event) => {
+
+        const items = event.clipboardData?.items;
+
+        if (!items) return;
+
+        for (const item of items) {
+
+          if (item.type.startsWith("image/")) {
+
+            event.preventDefault();
+
+            const file = item.getAsFile();
+
+            if (file) {
+              setImage(i, file);
+            }
+
+            return;
+          }
+        }
+
+        alert("No image found in clipboard. Copy an image first.");
+      });
+
+      // Allow dragging and dropping an image.
+      pasteArea.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        pasteArea.classList.add("dragover");
+      });
+
+      pasteArea.addEventListener("dragleave", () => {
+        pasteArea.classList.remove("dragover");
+      });
+
+      pasteArea.addEventListener("drop", (event) => {
+
+        event.preventDefault();
+        pasteArea.classList.remove("dragover");
+
+        const file = event.dataTransfer.files[0];
+
+        if (file) {
+          setImage(i, file);
+        }
+      });
+
+      removeButton.addEventListener("click", () => {
+        clearImage(i);
+      });
+    }
+
+
+    // =====================================
+    // URL VALIDATION
+    // =====================================
+
     function isValidWebURL(value) {
+
       try {
         const url = new URL(value);
-        return url.protocol === "https:" || url.protocol === "http:";
+
+        return (
+          url.protocol === "https:" ||
+          url.protocol === "http:"
+        );
+
       } catch {
         return false;
       }
     }
 
-    // Test whether the URL actually loads an image.
-    function testImageURL(value) {
-      return new Promise((resolve) => {
-        const image = new Image();
 
-        image.onload = () => resolve(true);
-        image.onerror = () => resolve(false);
+    // =====================================
+    // UPLOAD IMAGE TO FIREBASE STORAGE
+    // =====================================
 
-        image.src = value;
+    async function uploadImage(number, wishlistNumber, file) {
+
+      const extension = file.type === "image/jpeg" ? "jpg" :
+                        file.type === "image/png" ? "png" :
+                        file.type === "image/webp" ? "webp" : "gif";
+
+      const uniqueName =
+        `wishlist_${number}_${wishlistNumber}_${Date.now()}.${extension}`;
+
+      const imagePath =
+        `wishlist_images/${number}/${uniqueName}`;
+
+      const imageReference = storageRef(storage, imagePath);
+
+      await uploadBytes(imageReference, file, {
+        contentType: file.type
       });
+
+      return await getDownloadURL(imageReference);
     }
 
-    // Preview and validate each picture URL.
-    for (let i = 1; i <= 3; i++) {
-      const pictureInput = document.getElementById(`picture${i}`);
-      const preview = document.getElementById(`preview${i}`);
 
-      pictureInput.addEventListener("change", async () => {
-        const url = pictureInput.value.trim();
+    // =====================================
+    // SAVE WISHLIST
+    // =====================================
 
-        preview.style.display = "none";
-
-        if (!url) return;
-
-        if (!isValidWebURL(url)) {
-          alert(`Wishlist ${i}: Please enter a valid HTTP or HTTPS URL.`);
-          pictureInput.value = "";
-          return;
-        }
-
-        status.textContent = `Checking Wishlist ${i} image...`;
-        status.className = "status";
-
-        const valid = await testImageURL(url);
-
-        if (valid) {
-          preview.src = url;
-          preview.style.display = "block";
-          status.textContent = "Image loaded successfully.";
-          status.className = "status success";
-        } else {
-          alert(
-            `Wishlist ${i}: The image could not be loaded. ` +
-            `Please use a direct, publicly accessible image URL.`
-          );
-
-          pictureInput.value = "";
-          preview.src = "";
-          status.textContent = "Image validation failed.";
-          status.className = "status error";
-        }
-      });
-    }
-
-    // Save or update a wishlist record.
     form.addEventListener("submit", async (event) => {
+
       event.preventDefault();
 
-      const number = Number(document.getElementById("number").value);
+      const number = Number(
+        document.getElementById("number").value
+      );
 
       if (!Number.isInteger(number) || number < 1 || number > 12) {
         alert("Please enter a whole number from 1 to 12.");
@@ -335,89 +586,126 @@
       const wishes = [];
 
       for (let i = 1; i <= 3; i++) {
+
         const description =
           document.getElementById(`description${i}`).value.trim();
 
         const link =
           document.getElementById(`link${i}`).value.trim();
 
-        const picture =
-          document.getElementById(`picture${i}`).value.trim();
+        const file = selectedImages[i];
 
-        if (!description || !link || !picture) {
-          alert(`Please complete all fields in Wishlist ${i}.`);
+        if (!description || !link) {
+          alert(`Please complete the description and link for Wishlist ${i}.`);
           return;
         }
 
-        if (!isValidWebURL(link) || !isValidWebURL(picture)) {
-          alert(`Please enter valid HTTP or HTTPS URLs in Wishlist ${i}.`);
+        if (!isValidWebURL(link)) {
+          alert(`Please enter a valid link for Wishlist ${i}.`);
           return;
         }
 
-        wishes.push({ description, link, picture });
+        if (!file) {
+          alert(`Please paste or upload a picture for Wishlist ${i}.`);
+          return;
+        }
+
+        try {
+          validateImageFile(file);
+        } catch (error) {
+          alert(`Wishlist ${i}: ${error.message}`);
+          return;
+        }
+
+        wishes.push({
+          description,
+          link,
+          file
+        });
       }
 
       saveButton.disabled = true;
-      saveButton.textContent = "Checking images...";
-      status.textContent = "Validating all three images...";
-      status.className = "status";
 
       try {
-        // Check all images again before saving.
-        const imageChecks = await Promise.all(
-          wishes.map(wish => testImageURL(wish.picture))
-        );
 
-        const failedIndex = imageChecks.findIndex(valid => !valid);
+        const uploadedWishes = [];
 
-        if (failedIndex !== -1) {
-          throw new Error(
-            `Wishlist ${failedIndex + 1} has an image that cannot be loaded.`
+        for (let i = 0; i < 3; i++) {
+
+          status.textContent =
+            `Uploading image ${i + 1} of 3...`;
+
+          const imageURL = await uploadImage(
+            number,
+            i + 1,
+            wishes[i].file
           );
+
+          uploadedWishes.push({
+            description: wishes[i].description,
+            link: wishes[i].link,
+            picture: imageURL
+          });
         }
 
-        saveButton.textContent = "Saving...";
+        status.textContent = "Saving wishlist...";
 
         const record = {
-          number,
-          wish1: wishes[0],
-          wish2: wishes[1],
-          wish3: wishes[2],
+          number: number,
+          wish1: uploadedWishes[0],
+          wish2: uploadedWishes[1],
+          wish3: uploadedWishes[2],
           timestamp: new Date().toLocaleString("en-PH", {
             timeZone: "Asia/Manila"
           }),
           updatedAt: Date.now()
         };
 
-        // Same number updates the existing record.
-        await set(ref(db, `wishlist_items/${number}`), record);
+        // Saving to the same number updates its existing record.
+        await set(
+          dbRef(db, `wishlist_items/${number}`),
+          record
+        );
 
-        status.textContent = `Wishlist for Number ${number} saved successfully!`;
+        status.textContent =
+          `Wishlist for Number ${number} saved successfully!`;
+
         status.className = "status success";
 
         form.reset();
 
         for (let i = 1; i <= 3; i++) {
-          const preview = document.getElementById(`preview${i}`);
-          preview.src = "";
-          preview.style.display = "none";
+          clearImage(i);
         }
 
       } catch (error) {
-        status.textContent = error.message || "Unable to save wishlist.";
+
+        console.error(error);
+
+        status.textContent =
+          error.message || "Unable to save wishlist.";
+
         status.className = "status error";
+
       } finally {
+
         saveButton.disabled = false;
-        saveButton.textContent = "Save Wishlist";
       }
     });
 
-    // Display one row for each number, from 1 to 12.
+
+    // =====================================
+    // DISPLAY WISHLIST TABLE
+    // =====================================
+
     function renderTable(data) {
+
       tableBody.innerHTML = "";
 
       for (let number = 1; number <= 12; number++) {
-        const record = data?.[number];
+
+        const record = data[number];
+
         const row = document.createElement("tr");
 
         const numberCell = document.createElement("td");
@@ -425,43 +713,58 @@
         row.appendChild(numberCell);
 
         for (let i = 1; i <= 3; i++) {
+
           const cell = document.createElement("td");
           cell.className = "wishlist-cell";
 
           const wish = record?.[`wish${i}`];
 
           if (wish) {
+
             const description = document.createElement("div");
             description.textContent = wish.description || "";
             cell.appendChild(description);
 
             if (wish.link && isValidWebURL(wish.link)) {
+
               const link = document.createElement("a");
+
               link.href = wish.link;
               link.textContent = "View Link";
               link.target = "_blank";
               link.rel = "noopener noreferrer";
+
               cell.appendChild(link);
             }
 
             if (wish.picture && isValidWebURL(wish.picture)) {
+
               const image = document.createElement("img");
+
               image.src = wish.picture;
               image.alt = wish.description || "Wishlist image";
               image.loading = "lazy";
 
               image.onerror = () => {
                 image.remove();
+
                 const note = document.createElement("div");
                 note.className = "empty";
                 note.textContent = "Image unavailable";
+
                 cell.appendChild(note);
               };
 
               cell.appendChild(image);
             }
+
           } else {
-            cell.innerHTML = '<span class="empty">—</span>';
+
+            const empty = document.createElement("span");
+            empty.className = "empty";
+            empty.textContent = "—";
+
+            cell.appendChild(empty);
           }
 
           row.appendChild(cell);
@@ -469,19 +772,38 @@
 
         const timestampCell = document.createElement("td");
         timestampCell.textContent = record?.timestamp || "—";
+
         row.appendChild(timestampCell);
 
         tableBody.appendChild(row);
       }
     }
 
-    // Listen for real-time Firebase updates.
-    onValue(wishlistRef, (snapshot) => {
-      renderTable(snapshot.val() || {});
-    }, (error) => {
-      tableBody.innerHTML =
-        `<tr><td colspan="5">Unable to load data: ${error.message}</td></tr>`;
-    });
+
+    // =====================================
+    // REAL-TIME FIREBASE LISTENER
+    // =====================================
+
+    onValue(
+      wishlistRef,
+
+      (snapshot) => {
+        renderTable(snapshot.val() || {});
+      },
+
+      (error) => {
+        tableBody.innerHTML = "";
+
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+
+        cell.colSpan = 5;
+        cell.textContent = "Unable to load data: " + error.message;
+
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+      }
+    );
 
   </script>
 
